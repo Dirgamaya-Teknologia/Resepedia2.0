@@ -3,4 +3,45 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Satuan Bahan -->
+    <string-array name="satuan_array">
+        <item>-- Satuan Bahan -- </item>
+        <item>kg</item>
+        <item>gram</item>
+        <item>ons</item>
+        <item>pon</item>
+        <item>sdm</item>
+        <item>sdt</item>
+        <item>ml</item>
+        <item>liter</item>
+        <item>buah</item>
+        <item>batang</item>
+        <item>siung</item>
+        <item>butir</item>
+    </string-array>
+
+    <!-- Satuan Bahan -->
+    <string-array name="tipe_array">
+        <item>-- Tipe Bahan --</item>
+        <item>Bahan Jadi</item>
+        <item>Mentah</item>
+        <item>Setengah Jadi</item>
+    </string-array>
+
+    <string name="label_Register">Register</string>
+    <string name="label_login">LOGIN</string>
+    <string name="label_password">Password</string>
+    <string name="label_loginn">login</string>
+    <string name="label_konfirmasipassword">konfirmasi</string>
+    <string name="label_email">email</string>
+    <string name="label_daftar">DAFTAR</string>
+    <string name="label_daftar_sekarang">Daftar Sekarang</string>
+    <string name="label_username">Username</string>
+    <string name="label_kata_sandi">kata sandi</string>
+    <string name="label_daftar_akun_resepedia">Daftar Akun Resepedia</string>
+    <string name="label_login_with_facebook">Login with Facebook</string>
+    <string name="label_masuk_lewat_email">masuk lewat email</string>
+    <string name="label_alamat_email">Alamat Email</string>
+    <string name="label_daftar_dengan_email">Daftar dengan email</string>
 </resources>
