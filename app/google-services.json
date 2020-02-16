@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "739018471818",
+    "firebase_url": "https://resepedia2.firebaseio.com",
+    "project_id": "resepedia2",
+    "storage_bucket": "resepedia2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:739018471818:android:f18006fbb6da8bcab8b073",
+        "android_client_info": {
+          "package_name": "com.dyakta.resepedia"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "739018471818-thnkgb5tdjk9vsdhchjsv9ms53s54ig2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dyakta.resepedia",
+            "certificate_hash": "b33ef5ef2cbed9ca21fc3eaa10f64739af05d960"
+          }
+        },
+        {
+          "client_id": "739018471818-smv8akk3mf0l8s8p19npbktuknvgj0aa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDUaDM3xYBPZYwbsoUKrNmSSy-MnEB6bEM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "739018471818-smv8akk3mf0l8s8p19npbktuknvgj0aa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
