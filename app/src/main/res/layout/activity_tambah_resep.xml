@@ -3,32 +3,60 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="16dp"
     tools:context=".TambahResepActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarResep"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimaryDark"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:titleTextColor="#ffffff" />
 
     <TextView
         android:id="@+id/tv_judul"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
         android:text="Judul"
         android:textStyle="bold" />
 
     <EditText
         android:id="@+id/edt_judul"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:inputType="text" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Deskripsi"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"/>
 
     <EditText
         android:id="@+id/edt_deskripsi"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:inputType="text" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -46,18 +74,32 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Porsi"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"/>
 
             <EditText
                 android:id="@+id/edt_porsi"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="8dp"
+                android:inputType="number|text" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Bahan"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"/>
 
         </LinearLayout>
 
@@ -71,20 +113,34 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Jenis Resep"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"/>
 
             <EditText
                 android:id="@+id/edt_jenis_resep"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:inputType="text" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
-                android:paddingRight="8dp"
+                android:paddingRight="16dp"
                 android:text="Quantitas"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"/>
 
         </LinearLayout>
 
@@ -103,9 +159,13 @@
 
             <Spinner
                 android:id="@+id/sp_bahan"
+                style="@style/Widget.AppCompat.Spinner.DropDown"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginRight="8dp"
                 android:layout_weight="2" />
 
@@ -113,7 +173,13 @@
                 android:id="@+id/edt_quantitas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="8" />
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="8dp"
+                android:layout_weight="8"
+                android:inputType="number|text" />
 
         </LinearLayout>
 
@@ -123,23 +189,47 @@
         android:id="@+id/btn_add_bahan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="add bahan" />
+        android:text="Tambah Bahan"
+        android:background="@drawable/bg_button"
+        android:textColor="@color/white"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Langkah-langkah"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"/>
 
     <EditText
         android:id="@+id/edt_langkah_langkah"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="8dp"
+        android:inputType="text" />
 
     <Button
         android:id="@+id/btn_add"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="add resep" />
+        android:text="Tambah Resep"
+        android:background="@drawable/bg_button"
+        android:textColor="@color/white"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"/>
 
 </LinearLayout>

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -27,7 +28,6 @@ public class TambahBahanActivity extends AppCompatActivity {
     private Toolbar newPostToolbar;
     private Button btn_bahan;
     private EditText mNamaBahan;
-    private ProgressBar progressBar;
     private FirebaseFirestore firebaseFirestore;
 
     @Override
@@ -35,7 +35,6 @@ public class TambahBahanActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tambah_bahan);
 
-        progressBar = findViewById(R.id.progressBar);
         btn_bahan = findViewById(R.id.btn_tambah_bahan);
         mNamaBahan = findViewById(R.id.et_nama_bahan);
 
@@ -89,14 +88,13 @@ public class TambahBahanActivity extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        progressBar.setVisibility(View.VISIBLE);
                         Toast.makeText(TambahBahanActivity.this,"Berhasil Menambahkan", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(TambahBahanActivity.this, MainActivity.class));
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        progressBar.setVisibility(View.VISIBLE);
                         Toast.makeText(TambahBahanActivity.this,e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
