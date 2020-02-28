@@ -17,6 +17,7 @@
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
         <activity android:name=".SetupProfilActivity"/>
+        <activity android:name=".DetailActivity"/>
         <activity android:name=".DashboardLoginActivity"/>
         <activity android:name=".LoginActivity"/>
         <activity android:name=".RegisAdminActivity" />

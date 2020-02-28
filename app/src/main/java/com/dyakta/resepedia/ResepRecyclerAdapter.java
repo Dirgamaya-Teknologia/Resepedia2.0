@@ -42,11 +42,11 @@ public class ResepRecyclerAdapter extends RecyclerView.Adapter<ResepRecyclerAdap
     public List<Admin> admin_list;
     public Context context;
 
-//    private OnItemClickCallback onItemClickCallback;
-//
-//    void setOnItemClickCallback(OnItemClickCallback onItemClickCallback) {
-//        this.onItemClickCallback = onItemClickCallback;
-//    }
+    private OnItemClickCallback onItemClickCallback;
+
+    void setOnItemClickCallback(OnItemClickCallback onItemClickCallback) {
+        this.onItemClickCallback = onItemClickCallback;
+    }
 
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth firebaseAuth;
@@ -98,23 +98,13 @@ public class ResepRecyclerAdapter extends RecyclerView.Adapter<ResepRecyclerAdap
 //            Toast.makeText(context,"Error "+ e.getMessage(),Toast.LENGTH_SHORT).show();
 //        }
 
-
-
-
-
-
-
-
-
-
-//        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                ResepPost reseplist = resep_list.get(viewHolder.getAdapterPosition());
-//                Users userlist = users_list.get(viewHolder.getAdapterPosition());
-//                onItemClickCallback.klik(reseplist,userlist);
-//            }
-//        });
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ResepPost reseplist = resep_list.get(viewHolder.getAdapterPosition());
+                onItemClickCallback.klik(reseplist);
+            }
+        });
 
 
 //
@@ -182,9 +172,9 @@ public class ResepRecyclerAdapter extends RecyclerView.Adapter<ResepRecyclerAdap
     }
 
     }
-//    public interface OnItemClickCallback{
-//        void klik(ResepPost data);
-//    }
+    interface OnItemClickCallback{
+        void klik(ResepPost data);
+    }
 
 
 

@@ -1,6 +1,7 @@
 package com.dyakta.resepedia;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -66,9 +67,15 @@ public class HomeFragment extends Fragment {
         resep_list_view.setAdapter(resepRecyclerAdapter);
 
         firebaseAuth = FirebaseAuth.getInstance();
-//        resepRecyclerAdapter.setOnItemClickCallback(new PanduanRecyclerAdapter.OnItemClickCallback() {
+        resepRecyclerAdapter.setOnItemClickCallback(new OnItemClickCallback() {
+            @Override
+            public void klik(ResepPost data) {
+                showData(data);
+            }
+        });
+//        resepRecyclerAdapter.setOnItemClickCallback(new ResepRecyclerAdapter().OnItemClickCallback() {
 //            @Override
-//            public void klik(Tips data) {
+//            public void klik(ResepPost data) {
 //                showData(data);
 //            }
 //        });
@@ -134,6 +141,18 @@ public class HomeFragment extends Fragment {
         }
 
         return view;
+    }
+
+    private void showData(ResepPost data) {
+        Intent intent = new Intent(getActivity(), DetailActivity.class);
+        intent.putExtra(DetailActivity.EXTRA_GAMBAR,data.getImage_url());
+        intent.putExtra(DetailActivity.EXTRA_THUMB,data.getThumb());
+        intent.putExtra(DetailActivity.EXTRA_JUDUL, data.getJudul());
+        intent.putExtra(DetailActivity.EXTRA_DESC, data.getDesc());
+        intent.putExtra(String.valueOf(DetailActivity.EXTRA_QUANTITY), data.getQuantitas());
+        intent.putExtra(DetailActivity.EXTRA_BAHAN, data.getBahan());
+        intent.putExtra(DetailActivity.EXTRA_LANGKAH, data.getLangkah());
+        startActivity(intent);
     }
 
     private void loadPost() {
