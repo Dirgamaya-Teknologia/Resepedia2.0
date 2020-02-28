@@ -12,73 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <EditText
-        android:id="@+id/editxt_email"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:background="@drawable/eduttext_bg"
-        android:ems="10"
-        android:hint="@string/label_alamat_email"
-        android:inputType="textEmailAddress"
-        android:textColor="#ffffff"
-        android:textColorHint="#ffffff"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
-
-    <EditText
-        android:id="@+id/editxt_password"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/eduttext_bg"
-        android:ems="10"
-        android:hint="@string/label_password"
-        android:inputType="textPassword"
-        android:textColor="#ffffff"
-        android:textColorHint="#ffffff"
-        app:layout_constraintEnd_toEndOf="@+id/editxt_email"
-        app:layout_constraintStart_toStartOf="@+id/editxt_email"
-        app:layout_constraintTop_toBottomOf="@+id/editxt_email" />
-
-    <EditText
-        android:id="@+id/editxt_konfirmasiPassword"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/eduttext_bg"
-        android:ems="10"
-        android:hint="@string/label_konfirmasipassword"
-        android:inputType="textPassword"
-        android:textColor="#ffffff"
-        android:textColorHint="#ffffff"
-        app:layout_constraintEnd_toEndOf="@+id/editxt_password"
-        app:layout_constraintStart_toStartOf="@+id/editxt_password"
-        app:layout_constraintTop_toBottomOf="@+id/editxt_password" />
-
 
         <Button
-            android:id="@+id/btn_daftarDenganEmail"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/bg_button_white"
-            android:text="@string/label_daftar_dengan_email"
-            android:textColor="@color/colorPrimaryDark"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/editxt_konfirmasiPassword"
-            app:layout_constraintStart_toStartOf="@+id/editxt_konfirmasiPassword"
-            app:layout_constraintTop_toBottomOf="@+id/editxt_konfirmasiPassword" />
-
-        <Button
-            android:id="@+id/btn_masukLewatEmail"
+            android:id="@+id/btn_masukAdmin"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_marginStart="16dp"
@@ -87,37 +23,42 @@
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             android:background="@drawable/bg_button_white"
-            android:text="@string/label_masuk_lewat_email"
+            android:text="Masuk sebagai admin"
             android:textColor="@color/colorPrimaryDark"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
+        <Button
+            android:id="@+id/btn_masukUser"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/bg_button_white"
+            android:text="Masuk sebagai user"
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_masukAdmin" />
+
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/textView7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="atau"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="108dp"
+            android:text="Selamat datang di Resepedia"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textColor="#ffffff"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="@+id/btn_masukLewatEmail"
-            app:layout_constraintStart_toStartOf="@+id/btn_masukLewatEmail"
-            app:layout_constraintTop_toBottomOf="@+id/btn_masukLewatEmail" />
-
-    <TextView
-        android:id="@+id/textView7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="108dp"
-        android:text="@string/label_daftar_akun_resepedia"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="#ffffff"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dashboardToolbar" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dashboardToolbar" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/dashboardToolbar"

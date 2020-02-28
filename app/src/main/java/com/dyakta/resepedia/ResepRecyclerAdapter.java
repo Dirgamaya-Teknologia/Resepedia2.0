@@ -39,6 +39,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class ResepRecyclerAdapter extends RecyclerView.Adapter<ResepRecyclerAdapter.ViewHolder> {
 
     public List<ResepPost> resep_list;
+    public List<Admin> admin_list;
     public Context context;
 
 //    private OnItemClickCallback onItemClickCallback;
@@ -50,8 +51,9 @@ public class ResepRecyclerAdapter extends RecyclerView.Adapter<ResepRecyclerAdap
     private FirebaseFirestore firebaseFirestore;
     private FirebaseAuth firebaseAuth;
 
-    public ResepRecyclerAdapter(List<ResepPost> resep_list) {
+    public ResepRecyclerAdapter(List<ResepPost> resep_list, List<Admin> admin_list) {
         this.resep_list = resep_list;
+        this.admin_list = admin_list;
     }
 
     @NonNull
@@ -77,8 +79,14 @@ public class ResepRecyclerAdapter extends RecyclerView.Adapter<ResepRecyclerAdap
 
         String judul_data = resep_list.get(position).getJudul();
         viewHolder.setJudulText(judul_data);
-        String desc_data = resep_list.get(position).getDeskripsi();
+        String desc_data = resep_list.get(position).getDesc();
         viewHolder.setDescText(desc_data);
+        String image_uri = resep_list.get(position).getImage_url();
+        String thumbUri = resep_list.get(position).getThumb();
+        viewHolder.setBlogImage(image_uri,thumbUri);
+        String userName = admin_list.get(position).getName();
+        String userImage = admin_list.get(position).getImage();
+        viewHolder.setUserData(userName,userImage);
 
 //
 //        try {
@@ -123,7 +131,6 @@ public class ResepRecyclerAdapter extends RecyclerView.Adapter<ResepRecyclerAdap
         private TextView descView;
         private TextView judulView;
         private ImageView blogImageView;
-        private TextView blogDate;
         private TextView blogUserName;
         private CircleImageView blogUserImage;
 
@@ -163,8 +170,16 @@ public class ResepRecyclerAdapter extends RecyclerView.Adapter<ResepRecyclerAdap
         }
 
 
+        public void setUserData(String userName, String userImage) {
+            blogUserImage = mView.findViewById(R.id.resep_user_image);
+            blogUserName = mView.findViewById(R.id.txt_name_post);
+            blogUserName.setText(userName);
+            RequestOptions placeholderOption = new RequestOptions();
+            placeholderOption.placeholder(R.drawable.user_male);
 
+            Glide.with(context).applyDefaultRequestOptions(placeholderOption).load(userImage).into(blogUserImage);
         }
+    }
 
     }
 //    public interface OnItemClickCallback{

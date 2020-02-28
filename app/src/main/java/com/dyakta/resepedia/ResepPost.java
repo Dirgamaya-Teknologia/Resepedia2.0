@@ -5,21 +5,48 @@ import java.util.Date;
 
 public class ResepPost extends ResepPostId{
 
-    public String judul,deskripsi,jenis_resep,bahan,langkah;
+    public String judul,desc,jenis_resep,bahan,langkah,image_url,thumb,user_id;
     public Double porsi,quantitas;
 
 
     public ResepPost() {
     }
 
-    public ResepPost(String judul, String deskripsi, String jenis_resep, String bahan, String langkah, Double porsi, Double quantitas) {
+    public ResepPost(String judul, String deskripsi, String jenis_resep, String bahan, String langkah, String image_url, String thumb, String user_id, Double porsi, Double quantitas) {
         this.judul = judul;
-        this.deskripsi = deskripsi;
+        this.desc = deskripsi;
         this.jenis_resep = jenis_resep;
         this.bahan = bahan;
         this.langkah = langkah;
+        this.image_url = image_url;
+        this.thumb = thumb;
+        this.user_id = user_id;
         this.porsi = porsi;
         this.quantitas = quantitas;
+    }
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
+
+    public String getImage_url() {
+        return image_url;
+    }
+
+    public void setImage_url(String image_url) {
+        this.image_url = image_url;
+    }
+
+    public String getThumb() {
+        return thumb;
+    }
+
+    public void setThumb(String thumb) {
+        this.thumb = thumb;
     }
 
     public Double getPorsi() {
@@ -46,12 +73,12 @@ public class ResepPost extends ResepPostId{
         this.judul = judul;
     }
 
-    public String getDeskripsi() {
-        return deskripsi;
+    public String getDesc() {
+        return desc;
     }
 
     public void setDeskripsi(String deskripsi) {
-        this.deskripsi = deskripsi;
+        this.desc = deskripsi;
     }
 
 

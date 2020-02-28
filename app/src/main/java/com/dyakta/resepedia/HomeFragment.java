@@ -21,6 +21,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ import java.util.List;
 public class HomeFragment extends Fragment {
     private RecyclerView resep_list_view;
     private List<ResepPost> resep_list;
+    private List<Admin> adminList;
 
 
     private FirebaseAuth firebaseAuth;
@@ -56,12 +58,14 @@ public class HomeFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_home, container, false);
 
         resep_list = new ArrayList<>();
+        adminList = new ArrayList<>();
         resep_list_view = view.findViewById(R.id.resep_list_item);
 
-        resepRecyclerAdapter = new ResepRecyclerAdapter(resep_list);
+        resepRecyclerAdapter = new ResepRecyclerAdapter(resep_list,adminList);
         resep_list_view.setLayoutManager(new LinearLayoutManager(container.getContext()));
         resep_list_view.setAdapter(resepRecyclerAdapter);
 
+        firebaseAuth = FirebaseAuth.getInstance();
 //        resepRecyclerAdapter.setOnItemClickCallback(new PanduanRecyclerAdapter.OnItemClickCallback() {
 //            @Override
 //            public void klik(Tips data) {
@@ -69,34 +73,106 @@ public class HomeFragment extends Fragment {
 //            }
 //        });
 
-        firebaseFirestore = FirebaseFirestore.getInstance();
+        if (firebaseAuth.getCurrentUser() != null){
 
-        firebaseFirestore.collection("Resep").addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+            firebaseFirestore = FirebaseFirestore.getInstance();
+
+            resep_list_view.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+
+                    boolean reacheBottom = !recyclerView.canScrollVertically(1);
+                    if (reacheBottom){
+                        loadPost();
+                    }
+                }
+            });
+
+            Query firstQuery = firebaseFirestore.collection("Resep").orderBy("judul", Query.Direction.ASCENDING).limit(30);
+            firstQuery.addSnapshotListener((queryDocumentSnapshots, e) -> {
                 if (e == null) {
-                    for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
-                        if (documentChange.getType() == DocumentChange.Type.ADDED) {
-                            firebaseFirestore.collection("Resep").document().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    ResepPost resepPost = documentChange.getDocument().toObject(ResepPost.class);
-                                    if (task.isSuccessful()) {
-                                        resep_list.add(resepPost);
-                                    } else {
-                                        resep_list.add(0, resepPost);
-                                    }
-                                    resepRecyclerAdapter.notifyDataSetChanged();
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        if (isFirstPageFirstLoad) {
+                            lastVisible = queryDocumentSnapshots.getDocuments().get(queryDocumentSnapshots.size() - 1);
+                            resep_list.clear();
+                            adminList.clear();
+                        }
+
+                        for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
+                            if (documentChange.getType() == DocumentChange.Type.ADDED) {
+                                String resepPostId = documentChange.getDocument().getId();
+                                final ResepPost resepPost = documentChange.getDocument().toObject(ResepPost.class).withId(resepPostId);
+
+                                String resepUserId = documentChange.getDocument().getString("user_id");
+                                if (resepUserId != null) {
+                                    firebaseFirestore.collection("Admin").document(resepUserId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                Admin admin = task.getResult().toObject(Admin.class);
+                                                if (isFirstPageFirstLoad) {
+
+                                                    adminList.add(admin);
+                                                    resep_list.add(resepPost);
+                                                } else {
+                                                    adminList.add(0, admin);
+                                                    resep_list.add(0, resepPost);
+                                                }
+
+                                                resepRecyclerAdapter.notifyDataSetChanged();
+                                            }
+                                        }
+                                    });
                                 }
-
-                            });
-
+                            }
+                            isFirstPageFirstLoad = false;
                         }
                     }
                 }
-            }
-        });
+            });
+        }
+
         return view;
+    }
+
+    private void loadPost() {
+        if (firebaseAuth.getCurrentUser() != null){
+            Query nextQuery = firebaseFirestore.collection("Resep").
+                    orderBy("judul", Query.Direction.ASCENDING)
+                    .startAfter(lastVisible).limit(30);
+
+            nextQuery.addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                    if (!queryDocumentSnapshots.isEmpty()){
+                        lastVisible = queryDocumentSnapshots.getDocuments().get(queryDocumentSnapshots.size() - 1);
+                        for (DocumentChange doc : queryDocumentSnapshots.getDocumentChanges()){
+                            if (doc.getType() == DocumentChange.Type.ADDED){
+                                String resepPostId = doc.getDocument().getId();
+                                final ResepPost resepPost = doc.getDocument().toObject(ResepPost.class).withId(resepPostId);
+                                String resepUserId = doc.getDocument().getString("user_id");
+
+                                firebaseFirestore.collection("Admin").document(resepUserId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                        if (task.isSuccessful()){
+                                            Admin admin = task.getResult().toObject(Admin.class);
+
+                                            adminList.add(admin);
+                                            resep_list.add(resepPost);
+
+
+                                            resepRecyclerAdapter.notifyDataSetChanged();
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+        }
     }
 
 }

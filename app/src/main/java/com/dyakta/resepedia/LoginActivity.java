@@ -23,16 +23,23 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText et_emailLogin, et_passLogin;
     private TextView txt_lupaPass, txt_buatAkun;
-    private Button btn_masukLogin;
+    private Button btn_masukLogin, btn_daftar;
     private FirebaseAuth mFirebaseAuth;
     Toolbar toolbar;
+
 
 
     @Override
     protected void onStart() {
         super.onStart();
-        FirebaseUser currentUser  = mFirebaseAuth.getCurrentUser();
-        updateUI(currentUser);
+        FirebaseUser currentUser = mFirebaseAuth.getCurrentUser();
+        if (currentUser != null){
+            setMain();
+        }
+    }
+
+    private void setMain() {
+        startActivity(new Intent(LoginActivity.this, MainActivity.class));
     }
 
     private void updateUI(FirebaseUser currentUser) {
@@ -46,8 +53,9 @@ public class LoginActivity extends AppCompatActivity {
         et_emailLogin = findViewById(R.id.editText_emaill);
         et_passLogin = findViewById(R.id.editText_passLogin);
         btn_masukLogin = findViewById(R.id.btn_masuk);
+        btn_daftar = findViewById(R.id.btn_masuk2);
         txt_lupaPass = findViewById(R.id.txt_lupaPassword);
-        txt_buatAkun = findViewById(R.id.txt_buatAkun);
+
         mFirebaseAuth = FirebaseAuth.getInstance();
 
 
@@ -64,13 +72,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        txt_buatAkun.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                registerIntent();
-            }
-        });
-
         txt_lupaPass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,7 +79,12 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         
-        
+        btn_daftar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                registerIntent();
+            }
+        });
 
         btn_masukLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,7 +118,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void registerIntent() {
-        startActivity(new Intent(LoginActivity.this, DashboardLoginActivity.class));
+        startActivity(new Intent(LoginActivity.this, RegisAdminActivity.class));
         finish();
     }
 

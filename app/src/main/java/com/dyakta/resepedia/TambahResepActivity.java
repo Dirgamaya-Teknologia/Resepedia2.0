@@ -7,7 +7,10 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,34 +18,51 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import id.zelory.compressor.Compressor;
+
+
 public class TambahResepActivity extends AppCompatActivity {
 
     private EditText edtJudul, edtDeskripsi, edtPorsi, edtJenisResep, edtQuantitas, edtLangkah;
+    private ImageView newPostImage;
     private Spinner spBahan;
     private LinearLayout layoutBahan;
     private Button btnAddBahan, btnAddResep;
@@ -52,10 +72,24 @@ public class TambahResepActivity extends AppCompatActivity {
     private Toolbar newPostToolbar;
     Double v1,v2,hasilPorsi,hasilKuantitas;
 
+    private Uri postImageUri = null;
+//    private ProgressBar newPostProgress;
+
+    private StorageReference storageReference;
+
+    private FirebaseAuth firebaseAuth;
+    private Bitmap compressedImageFile;
+    private String current_user_id;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tambah_resep);
+        storageReference = FirebaseStorage.getInstance().getReference();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
+
+        current_user_id = firebaseAuth.getCurrentUser().getUid();
 
         TextView tvJudul = findViewById(R.id.tv_judul);
         newPostToolbar = findViewById(R.id.toolbarResep);
@@ -71,20 +105,21 @@ public class TambahResepActivity extends AppCompatActivity {
         });
 
         initComponent();
+        newPostImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                CropImage.activity()
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .setMinCropResultSize(512,512)
+                        .setAspectRatio(1,1)
+                        .start(TambahResepActivity.this);
+
+            }
+        });
+
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-//        firebaseFirestore.collection("Bahan").document().get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-//            @Override
-//            public void onSuccess(DocumentSnapshot documentSnapshot) {
-//                String id = documentSnapshot.getId();
-//                String nama = documentSnapshot.getString("nama");
-//                String satuan = documentSnapshot.getString("satuan");
-//                String tipe = documentSnapshot.getString("tipe");
-//                Bahan bahan = new Bahan(id, nama, satuan, tipe);
-//                listBahan.add(bahan);
-//                tvJudul.setText(nama);
-//            }
-//        });
         CollectionReference subjectRef = firebaseFirestore.collection("Bahan");
         spBahan = findViewById(R.id.sp_bahan);
         List<String> subjects = new ArrayList<>();
@@ -109,23 +144,6 @@ public class TambahResepActivity extends AppCompatActivity {
             listNamaBahan.add(listBahan.get(i).getNama());
         }
 
-//        ArrayAdapter<Bahan> arrayAdapter = new ArrayAdapter<>(
-//                this, android.R.layout.simple_spinner_item, listBahan
-//        );
-//        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        spBahan.setAdapter(arrayAdapter);
-//        spBahan.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parent) {
-//
-//            }
-//        });
-
         btnAddBahan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -141,42 +159,140 @@ public class TambahResepActivity extends AppCompatActivity {
                 // TODO methode add resep and upload to firebase
                 String judul = edtJudul.getText().toString();
                 String deskripsi = edtDeskripsi.getText().toString();
-//                String porsi = edtPorsi.getText().toString();
                 prosesPorsi();
                 String jenisResep = edtJenisResep.getText().toString();
                 String bahan = spBahan.getSelectedItem().toString().trim();
-//                String quantitas = edtQuantitas.getText().toString();
                 prosesKuantitas();
                 String langkah = edtLangkah.getText().toString();
-                String id = UUID.randomUUID().toString();
-                Map<String, Object> doc = new HashMap<>();
+                if (!TextUtils.isEmpty(judul)&& !TextUtils.isEmpty(deskripsi)&& !TextUtils.isEmpty(bahan) && !TextUtils.isEmpty(jenisResep)&& !TextUtils.isEmpty(langkah) && postImageUri != null){
+                    String id = UUID.randomUUID().toString();
 
-                doc.put("judul", judul);
-                doc.put("deskripsi", deskripsi);
-                doc.put("porsi", hasilPorsi);
-                doc.put("jenis_resep", jenisResep);
-                doc.put("bahan", bahan);
-                doc.put("quantitas", hasilKuantitas);
-                doc.put("langkah", langkah);
+                    final String randomName = UUID.randomUUID().toString();
 
-                firebaseFirestore.collection("Resep").document(id).set(doc)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Toast.makeText(TambahResepActivity.this,"Berhasil Menambahkan", Toast.LENGTH_SHORT).show();
-                                // TODO intent Activity to Fragment
-                                startActivity(new Intent(TambahResepActivity.this, MainActivity.class));
+                    final StorageReference filePath = storageReference.child("post_images").child(randomName);
+                    filePath.putFile(postImageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                        @Override
+                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                            if (!task.isSuccessful()){
+                                throw task.getException();
                             }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(TambahResepActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            return filePath.getDownloadUrl();
+                        }
+                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull final Task<Uri> task) {
+                            if (task.isSuccessful()){
+
+                                File newImageFile = new File(postImageUri.getPath());
+
+                                try {
+                                    compressedImageFile = new Compressor(TambahResepActivity.this).
+                                            setMaxHeight(100)
+                                            .setMaxWidth(100)
+                                            .setQuality(2)
+                                            .compressToBitmap(newImageFile);
+
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+
+                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                compressedImageFile.compress(Bitmap.CompressFormat.JPEG,100,baos);
+                                byte[] thumbData = baos.toByteArray();
+
+                                UploadTask uploadTask = storageReference.child("post_images/thumbs").child(randomName + ".jpg").
+                                        putBytes(thumbData);
+                                final Uri downloadUri = task.getResult();
+                                final String downloadtextUri = downloadUri.toString();
+                                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                                        Task<Uri> uriTask = taskSnapshot.getMetadata().getReference().getDownloadUrl();
+                                        String downloadThumbUri = uriTask.toString();
+
+                                        Map<String,Object> postMap = new HashMap<>();
+                                        postMap.put("image_url",downloadtextUri);
+                                        postMap.put("thumb", downloadThumbUri);
+                                        postMap.put("judul",judul);
+                                        postMap.put("desc",deskripsi);
+                                        postMap.put("porsi",hasilPorsi);
+                                        postMap.put("jenis_resep",jenisResep);
+                                        postMap.put("bahan",bahan);
+                                        postMap.put("quantitas",hasilKuantitas);
+                                        postMap.put("langkah",langkah);
+                                        postMap.put("user_id",current_user_id);
+
+                                        firebaseFirestore.collection("Resep").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentReference> task) {
+
+                                                if (task.isSuccessful()){
+
+                                                    Toast.makeText(TambahResepActivity.this,"Resep telah ditambahkan",Toast.LENGTH_LONG).show();
+                                                    Intent mainIntent = new Intent(TambahResepActivity.this,MainActivity.class);
+                                                    startActivity(mainIntent);
+                                                    finish();
+
+                                                }else {
+
+
+
+                                                }
+//                                                progressBar.setVisibility(View.INVISIBLE);
+
+                                            }
+                                        });
+
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        //Error handling
+                                    }
+                                });
+
+
+
+                            }else {
+//                                progressBar.setVisibility(View.INVISIBLE);
                             }
-                        });
+                        }
+                    });
+                }
             }
         });
     }
+
+
+
+
+//                Map<String, Object> doc = new HashMap<>();
+//
+//                doc.put("judul", judul);
+//                doc.put("deskripsi", deskripsi);
+//                doc.put("porsi", hasilPorsi);
+//                doc.put("jenis_resep", jenisResep);
+//                doc.put("bahan", bahan);
+//                doc.put("quantitas", hasilKuantitas);
+//                doc.put("langkah", langkah);
+//
+//                firebaseFirestore.collection("Resep").document(id).set(doc)
+//                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                            @Override
+//                            public void onComplete(@NonNull Task<Void> task) {
+//                                Toast.makeText(TambahResepActivity.this,"Berhasil Menambahkan", Toast.LENGTH_SHORT).show();
+//                                // TODO intent Activity to Fragment
+//                                startActivity(new Intent(TambahResepActivity.this, MainActivity.class));
+//                            }
+//                        })
+//                        .addOnFailureListener(new OnFailureListener() {
+//                            @Override
+//                            public void onFailure(@NonNull Exception e) {
+//                                Toast.makeText(TambahResepActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+//                            }
+//                        });
+
 
     private void initComponent() {
         edtJudul = findViewById(R.id.edt_judul);
@@ -186,6 +302,7 @@ public class TambahResepActivity extends AppCompatActivity {
         layoutBahan = findViewById(R.id.layout_bahan);
         btnAddBahan = findViewById(R.id.btn_add_bahan);
         spBahan = findViewById(R.id.sp_bahan);
+        newPostImage = findViewById(R.id.imageButton);
         edtQuantitas = findViewById(R.id.edt_quantitas);
         edtLangkah = findViewById(R.id.edt_langkah_langkah);
         btnAddResep = findViewById(R.id.btn_add);
@@ -209,4 +326,19 @@ public class TambahResepActivity extends AppCompatActivity {
         String kuantitas = Double.toString(hasilKuantitas);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+
+                postImageUri = result.getUri();
+                newPostImage.setImageURI(postImageUri);
+
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
+        }
+    }
 }
