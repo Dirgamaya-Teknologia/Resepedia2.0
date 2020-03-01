@@ -78,7 +78,7 @@ public class BahanRecyclerCRUDAdapter extends RecyclerView.Adapter<BahanRecycler
             viewHolder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    firebaseFirestore.collection("Bahan").document(bahanPostId).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    firebaseFirestore.collection("Bahan").document(bahan_list.get(position).getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             bahan_list.remove(position);
