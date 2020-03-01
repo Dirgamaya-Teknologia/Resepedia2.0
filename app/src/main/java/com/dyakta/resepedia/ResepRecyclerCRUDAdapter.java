@@ -77,11 +77,11 @@ public class ResepRecyclerCRUDAdapter extends RecyclerView.Adapter<ResepRecycler
             viewHolder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    firebaseFirestore.collection("Resep").document(resepPostId).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    firebaseFirestore.collection("Resep").document().delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             resep_list.remove(position);
-                            admin_list.remove(position);
+
 
                             notifyDataSetChanged();
                         }

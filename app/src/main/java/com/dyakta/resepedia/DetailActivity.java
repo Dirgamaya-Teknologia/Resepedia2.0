@@ -95,7 +95,7 @@ public class DetailActivity extends AppCompatActivity {
                 hasil = v1 * textKuantitas;
                 String porsi = Double.toString(hasil);
                 kuantitas.setText(porsi);
-                finish();
+                et_porsi.getText().clear();
 
             }
         });

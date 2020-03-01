@@ -1,6 +1,6 @@
 package com.dyakta.resepedia;
 
-public class Bahan {
+public class Bahan extends BahanPostId {
 
     String id;
     String nama;

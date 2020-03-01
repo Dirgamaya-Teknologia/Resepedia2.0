@@ -56,7 +56,7 @@ public class BahanRecyclerCRUDAdapter extends RecyclerView.Adapter<BahanRecycler
 
         viewHolder.setIsRecyclable(false);
 
-
+        final String bahanPostId = bahan_list.get(position).BahanPostId;
 //        final String currentUserId = firebaseAuth.getCurrentUser().getUid();
 //        final String b = bahan_list.get(position).getUser_id();
 
@@ -74,7 +74,7 @@ public class BahanRecyclerCRUDAdapter extends RecyclerView.Adapter<BahanRecycler
             viewHolder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    firebaseFirestore.collection("Bahan").document().delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    firebaseFirestore.collection("Bahan").document(bahanPostId).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             bahan_list.remove(position);
