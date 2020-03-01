@@ -211,7 +211,7 @@ public class TambahResepActivity extends AppCompatActivity {
                                         String downloadThumbUri = uriTask.toString();
 
                                         Map<String,Object> postMap = new HashMap<>();
-                                        postMap.put("id_resep",randomName);
+                                        postMap.put("id",randomName);
                                         postMap.put("image_url",downloadtextUri);
                                         postMap.put("thumb", downloadThumbUri);
                                         postMap.put("judul",judul);
@@ -223,26 +223,41 @@ public class TambahResepActivity extends AppCompatActivity {
                                         postMap.put("langkah",langkah);
                                         postMap.put("user_id",current_user_id);
 
-                                        firebaseFirestore.collection("Resep").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<DocumentReference> task) {
+                                        firebaseFirestore.collection("Resep").document(randomName).set(postMap)
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()){
 
-                                                if (task.isSuccessful()){
+                                                            Toast.makeText(TambahResepActivity.this,"Resep telah ditambahkan",Toast.LENGTH_LONG).show();
+                                                            Intent mainIntent = new Intent(TambahResepActivity.this,MainActivity.class);
+                                                            startActivity(mainIntent);
+                                                            finish();
 
-                                                    Toast.makeText(TambahResepActivity.this,"Resep telah ditambahkan",Toast.LENGTH_LONG).show();
-                                                    Intent mainIntent = new Intent(TambahResepActivity.this,MainActivity.class);
-                                                    startActivity(mainIntent);
-                                                    finish();
+                                                        }
+                                                    }
+                                                });
 
-                                                }else {
-
-
-
-                                                }
-//                                                progressBar.setVisibility(View.INVISIBLE);
-
-                                            }
-                                        });
+//                                        firebaseFirestore.collection("Resep").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+//                                            @Override
+//                                            public void onComplete(@NonNull Task<DocumentReference> task) {
+//
+//                                                if (task.isSuccessful()){
+//
+//                                                    Toast.makeText(TambahResepActivity.this,"Resep telah ditambahkan",Toast.LENGTH_LONG).show();
+//                                                    Intent mainIntent = new Intent(TambahResepActivity.this,MainActivity.class);
+//                                                    startActivity(mainIntent);
+//                                                    finish();
+//
+//                                                }else {
+//
+//
+//
+//                                                }
+////                                                progressBar.setVisibility(View.INVISIBLE);
+//
+//                                            }
+//                                        });
 
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {

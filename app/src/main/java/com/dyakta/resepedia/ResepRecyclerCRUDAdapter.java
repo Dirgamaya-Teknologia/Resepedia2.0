@@ -1,6 +1,7 @@
 package com.dyakta.resepedia;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,14 +71,17 @@ public class ResepRecyclerCRUDAdapter extends RecyclerView.Adapter<ResepRecycler
             viewHolder.edit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    Intent intent = new Intent(context, TambahResepActivity.class);
+                    intent.putExtra("called", "edit");
+                    intent.putExtra("resep", resep_list.get(position));
+                    context.startActivity(intent);
                 }
             });
 
             viewHolder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    firebaseFirestore.collection("Resep").document().delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    firebaseFirestore.collection("Resep").document(resep_list.get(position).getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
                             resep_list.remove(position);

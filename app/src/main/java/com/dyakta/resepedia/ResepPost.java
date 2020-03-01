@@ -1,11 +1,14 @@
 package com.dyakta.resepedia;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Date;
 
-public class ResepPost extends ResepPostId{
+public class ResepPost extends ResepPostId implements Parcelable {
 
-    public String judul,desc,jenis_resep,bahan,langkah,image_url,thumb,user_id;
+    public String id, judul,desc,jenis_resep,bahan,langkah,image_url,thumb,user_id;
     public Double porsi,quantitas;
 
 
@@ -23,6 +26,32 @@ public class ResepPost extends ResepPostId{
         this.user_id = user_id;
         this.porsi = porsi;
         this.quantitas = quantitas;
+    }
+
+    public ResepPost(String id, String judul, String desc, String jenis_resep, String bahan, String langkah, String image_url, String thumb, String user_id, Double porsi, Double quantitas) {
+        this.id = id;
+        this.judul = judul;
+        this.desc = desc;
+        this.jenis_resep = jenis_resep;
+        this.bahan = bahan;
+        this.langkah = langkah;
+        this.image_url = image_url;
+        this.thumb = thumb;
+        this.user_id = user_id;
+        this.porsi = porsi;
+        this.quantitas = quantitas;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 
     public String getUser_id() {
@@ -106,5 +135,51 @@ public class ResepPost extends ResepPostId{
     public void setLangkah(String langkah) {
         this.langkah = langkah;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeString(this.judul);
+        dest.writeString(this.desc);
+        dest.writeString(this.jenis_resep);
+        dest.writeString(this.bahan);
+        dest.writeString(this.langkah);
+        dest.writeString(this.image_url);
+        dest.writeString(this.thumb);
+        dest.writeString(this.user_id);
+        dest.writeValue(this.porsi);
+        dest.writeValue(this.quantitas);
+    }
+
+    protected ResepPost(Parcel in) {
+        this.id = in.readString();
+        this.judul = in.readString();
+        this.desc = in.readString();
+        this.jenis_resep = in.readString();
+        this.bahan = in.readString();
+        this.langkah = in.readString();
+        this.image_url = in.readString();
+        this.thumb = in.readString();
+        this.user_id = in.readString();
+        this.porsi = (Double) in.readValue(Double.class.getClassLoader());
+        this.quantitas = (Double) in.readValue(Double.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<ResepPost> CREATOR = new Parcelable.Creator<ResepPost>() {
+        @Override
+        public ResepPost createFromParcel(Parcel source) {
+            return new ResepPost(source);
+        }
+
+        @Override
+        public ResepPost[] newArray(int size) {
+            return new ResepPost[size];
+        }
+    };
 }
 
