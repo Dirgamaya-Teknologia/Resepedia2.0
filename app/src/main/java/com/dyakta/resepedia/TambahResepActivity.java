@@ -207,11 +207,11 @@ public class TambahResepActivity extends AppCompatActivity {
                                 uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                     @Override
                                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
                                         Task<Uri> uriTask = taskSnapshot.getMetadata().getReference().getDownloadUrl();
                                         String downloadThumbUri = uriTask.toString();
 
                                         Map<String,Object> postMap = new HashMap<>();
+                                        postMap.put("id_resep",randomName);
                                         postMap.put("image_url",downloadtextUri);
                                         postMap.put("thumb", downloadThumbUri);
                                         postMap.put("judul",judul);
