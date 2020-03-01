@@ -93,8 +93,6 @@ public class TambahResepActivity extends AppCompatActivity {
 
         TextView tvJudul = findViewById(R.id.tv_judul);
         newPostToolbar = findViewById(R.id.toolbarResep);
-        newPostToolbar.setTitle("Tambah Resep");
-        setSupportActionBar(newPostToolbar);
 
         newPostToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         newPostToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -139,10 +137,39 @@ public class TambahResepActivity extends AppCompatActivity {
             }
         });
 
+        String called = getIntent().getStringExtra("called");
+        ResepPost resepPost = getIntent().getParcelableExtra("resep");
+        String id = resepPost.getId();
+        if (called.equalsIgnoreCase("edit")){
+            newPostToolbar.setTitle("Ubah Resep");
+            btnAddResep.setText("Ubah Resep");
 
-        for (int i = 0; i < listBahan.size(); i++) {
-            listNamaBahan.add(listBahan.get(i).getNama());
+            String judul = resepPost.getJudul();
+            String desc = resepPost.getDesc();
+            double porsi = resepPost.getPorsi();
+            String bahan = resepPost.getBahan();
+            double quantitas = resepPost.getQuantitas();
+            String langkah = resepPost.getLangkah();
+
+            edtJudul.setText(judul);
+            edtDeskripsi.setText(desc);
+            edtPorsi.setText(String.valueOf(porsi));
+
+            for (int i = 0; i < subjects.size(); i++) {
+                if (bahan.equals(subjects.get(i))){
+                    spBahan.setSelection(i);
+                }
+            }
+
+            edtQuantitas.setText(String.valueOf(quantitas));
+            edtLangkah.setText(langkah);
+
+        } else {
+            newPostToolbar.setTitle("Tambah Resep");
+            btnAddResep.setText("Tambah Resep");
         }
+
+        setSupportActionBar(newPostToolbar);
 
         btnAddBahan.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -223,42 +250,37 @@ public class TambahResepActivity extends AppCompatActivity {
                                         postMap.put("langkah",langkah);
                                         postMap.put("user_id",current_user_id);
 
-                                        firebaseFirestore.collection("Resep").document(randomName).set(postMap)
-                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        if (task.isSuccessful()){
+                                        if (called.equalsIgnoreCase("edit")){
+                                            firebaseFirestore.collection("resep").document(randomName).update(postMap)
+                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if (task.isSuccessful()) {
 
-                                                            Toast.makeText(TambahResepActivity.this,"Resep telah ditambahkan",Toast.LENGTH_LONG).show();
-                                                            Intent mainIntent = new Intent(TambahResepActivity.this,MainActivity.class);
-                                                            startActivity(mainIntent);
-                                                            finish();
+                                                                Toast.makeText(TambahResepActivity.this, "Resep telah diubahkan", Toast.LENGTH_LONG).show();
+                                                                Intent mainIntent = new Intent(TambahResepActivity.this, MainActivity.class);
+                                                                startActivity(mainIntent);
+                                                                finish();
 
+                                                            }
                                                         }
-                                                    }
-                                                });
+                                                    });
+                                        } else {
+                                            firebaseFirestore.collection("Resep").document(randomName).set(postMap)
+                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            if (task.isSuccessful()) {
 
-//                                        firebaseFirestore.collection("Resep").add(postMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-//                                            @Override
-//                                            public void onComplete(@NonNull Task<DocumentReference> task) {
-//
-//                                                if (task.isSuccessful()){
-//
-//                                                    Toast.makeText(TambahResepActivity.this,"Resep telah ditambahkan",Toast.LENGTH_LONG).show();
-//                                                    Intent mainIntent = new Intent(TambahResepActivity.this,MainActivity.class);
-//                                                    startActivity(mainIntent);
-//                                                    finish();
-//
-//                                                }else {
-//
-//
-//
-//                                                }
-////                                                progressBar.setVisibility(View.INVISIBLE);
-//
-//                                            }
-//                                        });
+                                                                Toast.makeText(TambahResepActivity.this, "Resep telah ditambahkan", Toast.LENGTH_LONG).show();
+                                                                Intent mainIntent = new Intent(TambahResepActivity.this, MainActivity.class);
+                                                                startActivity(mainIntent);
+                                                                finish();
 
+                                                            }
+                                                        }
+                                                    });
+                                        }
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
@@ -278,36 +300,6 @@ public class TambahResepActivity extends AppCompatActivity {
             }
         });
     }
-
-
-
-
-//                Map<String, Object> doc = new HashMap<>();
-//
-//                doc.put("judul", judul);
-//                doc.put("deskripsi", deskripsi);
-//                doc.put("porsi", hasilPorsi);
-//                doc.put("jenis_resep", jenisResep);
-//                doc.put("bahan", bahan);
-//                doc.put("quantitas", hasilKuantitas);
-//                doc.put("langkah", langkah);
-//
-//                firebaseFirestore.collection("Resep").document(id).set(doc)
-//                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                            @Override
-//                            public void onComplete(@NonNull Task<Void> task) {
-//                                Toast.makeText(TambahResepActivity.this,"Berhasil Menambahkan", Toast.LENGTH_SHORT).show();
-//                                // TODO intent Activity to Fragment
-//                                startActivity(new Intent(TambahResepActivity.this, MainActivity.class));
-//                            }
-//                        })
-//                        .addOnFailureListener(new OnFailureListener() {
-//                            @Override
-//                            public void onFailure(@NonNull Exception e) {
-//                                Toast.makeText(TambahResepActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-//                            }
-//                        });
-
 
     private void initComponent() {
         edtJudul = findViewById(R.id.edt_judul);

@@ -8,8 +8,8 @@ import java.util.Date;
 
 public class ResepPost extends ResepPostId implements Parcelable {
 
-    public String id, judul,desc,jenis_resep,bahan,langkah,image_url,thumb,user_id;
-    public Double porsi,quantitas;
+    private String id, judul,desc,jenis_resep,bahan,langkah,image_url,thumb,user_id;
+    private Double porsi,quantitas;
 
 
     public ResepPost() {
