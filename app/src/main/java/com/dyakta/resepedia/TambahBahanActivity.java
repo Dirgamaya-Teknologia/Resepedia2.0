@@ -39,8 +39,6 @@ public class TambahBahanActivity extends AppCompatActivity {
         mNamaBahan = findViewById(R.id.et_nama_bahan);
 
         newPostToolbar = findViewById(R.id.toolbar4);
-        newPostToolbar.setTitle("Tambah Bahan");
-        setSupportActionBar(newPostToolbar);
 
         newPostToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
         newPostToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -62,6 +60,42 @@ public class TambahBahanActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         tipe_dropdown.setAdapter(tipe_adapter);
 
+        String called = getIntent().getStringExtra("called");
+        Bahan bahan = getIntent().getParcelableExtra("bahan");
+        String id = bahan.getId();
+        if (called.equalsIgnoreCase("edit")) {
+            newPostToolbar.setTitle("Ubah Bahan");
+            btn_bahan.setText("Ubah Bahan");
+
+            String nama = bahan.getNama();
+            String satuan = bahan.getSatuan();
+            String tipe = bahan.getTipe();
+
+            mNamaBahan.setText(nama);
+
+            String[] satuans = getResources().getStringArray(R.array.satuan_array);
+            int sizeSatuan = satuans.length;
+            for (int i = 0; i < sizeSatuan; i++) {
+                if (satuan.equals(satuans[i])){
+                    satuan_dropdown.setSelection(i);
+                }
+            }
+
+            String[] tipes = getResources().getStringArray(R.array.tipe_array);
+            int sizeTipe = tipes.length;
+            for (int i = 0; i < sizeTipe; i++) {
+                if (tipe.equals(tipes[i])){
+                    tipe_dropdown.setSelection(i);
+                }
+            }
+
+        } else {
+            newPostToolbar.setTitle("Tambah Bahan");
+            btn_bahan.setText("Tambah Bahan");
+        }
+
+        setSupportActionBar(newPostToolbar);
+
         firebaseFirestore = FirebaseFirestore.getInstance();
         btn_bahan.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,10 +104,13 @@ public class TambahBahanActivity extends AppCompatActivity {
                 String satuan = satuan_dropdown.getSelectedItem().toString().trim();
                 String tipe = tipe_dropdown.getSelectedItem().toString().trim();
 
-                uploadData(nama, satuan, tipe);
+                if (called.equalsIgnoreCase("edit")) {
+                    UpdateData(id, nama, satuan, tipe);
+                } else {
+                    uploadData(nama, satuan, tipe);
+                }
             }
         });
-
     }
 
     private void uploadData(String nama, String satuan, String tipe) {
@@ -89,6 +126,29 @@ public class TambahBahanActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(TambahBahanActivity.this,"Berhasil Menambahkan", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(TambahBahanActivity.this, MainActivity.class));
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(TambahBahanActivity.this,e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void UpdateData(String id, String nama, String satuan, String tipe){
+        Map<String, Object> doc = new HashMap<>();
+        doc.put("id", id);
+        doc.put("nama", nama);
+        doc.put("satuan", satuan);
+        doc.put("tipe", tipe);
+
+        firebaseFirestore.collection("Bahan").document(id).update(doc)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Toast.makeText(TambahBahanActivity.this,"Berhasil Mengubahkan", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(TambahBahanActivity.this, MainActivity.class));
                     }
                 })
