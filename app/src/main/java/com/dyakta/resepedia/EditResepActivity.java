@@ -11,10 +11,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,14 +29,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -58,8 +49,7 @@ import java.util.UUID;
 
 import id.zelory.compressor.Compressor;
 
-
-public class TambahResepActivity extends AppCompatActivity {
+public class EditResepActivity extends AppCompatActivity {
 
     private EditText edtJudul, edtDeskripsi, edtPorsi, edtJenisResep, edtQuantitas, edtLangkah;
     private ImageView newPostImage;
@@ -111,7 +101,7 @@ public class TambahResepActivity extends AppCompatActivity {
                         .setGuidelines(CropImageView.Guidelines.ON)
                         .setMinCropResultSize(512, 512)
                         .setAspectRatio(1, 1)
-                        .start(TambahResepActivity.this);
+                        .start(EditResepActivity.this);
 
             }
         });
@@ -137,8 +127,30 @@ public class TambahResepActivity extends AppCompatActivity {
             }
         });
 
-        newPostToolbar.setTitle("Tambah Resep");
-        btnAddResep.setText("Tambah Resep");
+        ResepPost resepPost = getIntent().getParcelableExtra("resep");
+        String id = resepPost.getId();
+        newPostToolbar.setTitle("Ubah Resep");
+        btnAddResep.setText("Ubah Resep");
+
+        String judul = resepPost.getJudul();
+        String desc = resepPost.getDesc();
+        double porsi = resepPost.getPorsi();
+        String bahan = resepPost.getBahan();
+        double quantitas = resepPost.getQuantitas();
+        String langkah = resepPost.getLangkah();
+
+        edtJudul.setText(judul);
+        edtDeskripsi.setText(desc);
+        edtPorsi.setText(String.valueOf(porsi));
+
+        for (int i = 0; i < subjects.size(); i++) {
+            if (bahan.equals(subjects.get(i))) {
+                spBahan.setSelection(i);
+            }
+        }
+
+        edtQuantitas.setText(String.valueOf(quantitas));
+        edtLangkah.setText(langkah);
 
         setSupportActionBar(newPostToolbar);
 
@@ -184,7 +196,7 @@ public class TambahResepActivity extends AppCompatActivity {
                                 File newImageFile = new File(postImageUri.getPath());
 
                                 try {
-                                    compressedImageFile = new Compressor(TambahResepActivity.this).
+                                    compressedImageFile = new Compressor(EditResepActivity.this).
                                             setMaxHeight(100)
                                             .setMaxWidth(100)
                                             .setQuality(2)
@@ -221,21 +233,20 @@ public class TambahResepActivity extends AppCompatActivity {
                                         postMap.put("langkah", langkah);
                                         postMap.put("user_id", current_user_id);
 
-                                        firebaseFirestore.collection("Resep").document(randomName).set(postMap)
+                                        firebaseFirestore.collection("resep").document(randomName).update(postMap)
                                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         if (task.isSuccessful()) {
 
-                                                            Toast.makeText(TambahResepActivity.this, "Resep telah ditambahkan", Toast.LENGTH_LONG).show();
-                                                            Intent mainIntent = new Intent(TambahResepActivity.this, MainActivity.class);
+                                                            Toast.makeText(EditResepActivity.this, "Resep telah diubahkan", Toast.LENGTH_LONG).show();
+                                                            Intent mainIntent = new Intent(EditResepActivity.this, MainActivity.class);
                                                             startActivity(mainIntent);
                                                             finish();
 
                                                         }
                                                     }
                                                 });
-
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override

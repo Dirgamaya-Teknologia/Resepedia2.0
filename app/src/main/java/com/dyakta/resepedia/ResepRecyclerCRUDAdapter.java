@@ -71,8 +71,7 @@ public class ResepRecyclerCRUDAdapter extends RecyclerView.Adapter<ResepRecycler
             viewHolder.edit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, TambahResepActivity.class);
-                    intent.putExtra("called", "edit");
+                    Intent intent = new Intent(context, EditResepActivity.class);
                     intent.putExtra("resep", resep_list.get(position));
                     context.startActivity(intent);
                 }
