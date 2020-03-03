@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -23,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class TambahBahanActivity extends AppCompatActivity {
+public class EditBahanActivity extends AppCompatActivity {
 
     private Toolbar newPostToolbar;
     private Button btn_bahan;
@@ -60,8 +59,32 @@ public class TambahBahanActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         tipe_dropdown.setAdapter(tipe_adapter);
 
-        newPostToolbar.setTitle("Tambah Bahan");
-        btn_bahan.setText("Tambah Bahan");
+        Bahan bahan = getIntent().getParcelableExtra("bahan");
+        String id = bahan.getId();
+        newPostToolbar.setTitle("Ubah Bahan");
+        btn_bahan.setText("Ubah Bahan");
+
+        String nama = bahan.getNama();
+        String satuan = bahan.getSatuan();
+        String tipe = bahan.getTipe();
+
+        mNamaBahan.setText(nama);
+
+        String[] satuans = getResources().getStringArray(R.array.satuan_array);
+        int sizeSatuan = satuans.length;
+        for (int i = 0; i < sizeSatuan; i++) {
+            if (satuan.equals(satuans[i])) {
+                satuan_dropdown.setSelection(i);
+            }
+        }
+
+        String[] tipes = getResources().getStringArray(R.array.tipe_array);
+        int sizeTipe = tipes.length;
+        for (int i = 0; i < sizeTipe; i++) {
+            if (tipe.equals(tipes[i])) {
+                tipe_dropdown.setSelection(i);
+            }
+        }
 
         setSupportActionBar(newPostToolbar);
 
@@ -73,31 +96,30 @@ public class TambahBahanActivity extends AppCompatActivity {
                 String satuan = satuan_dropdown.getSelectedItem().toString().trim();
                 String tipe = tipe_dropdown.getSelectedItem().toString().trim();
 
-                uploadData(nama, satuan, tipe);
+                UpdateData(id, nama, satuan, tipe);
             }
         });
     }
 
-    private void uploadData(String nama, String satuan, String tipe) {
-        String id = UUID.randomUUID().toString();
+    private void UpdateData(String id, String nama, String satuan, String tipe) {
         Map<String, Object> doc = new HashMap<>();
         doc.put("id", id);
         doc.put("nama", nama);
         doc.put("satuan", satuan);
         doc.put("tipe", tipe);
 
-        firebaseFirestore.collection("Bahan").document(id).set(doc)
+        firebaseFirestore.collection("Bahan").document(id).update(doc)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(TambahBahanActivity.this, "Berhasil Menambahkan", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(TambahBahanActivity.this, MainActivity.class));
+                        Toast.makeText(EditBahanActivity.this, "Berhasil Mengubahkan", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(EditBahanActivity.this, MainActivity.class));
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(TambahBahanActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditBahanActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }

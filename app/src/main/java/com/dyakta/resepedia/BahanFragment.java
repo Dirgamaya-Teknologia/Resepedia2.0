@@ -99,6 +99,7 @@ public class BahanFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), TambahBahanActivity.class);
+                intent.putExtra("called", "tambah");
                 startActivity(intent);
             }
         });

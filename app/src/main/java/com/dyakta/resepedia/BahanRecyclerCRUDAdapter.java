@@ -68,8 +68,7 @@ public class BahanRecyclerCRUDAdapter extends RecyclerView.Adapter<BahanRecycler
             viewHolder.edit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, TambahBahanActivity.class);
-                    intent.putExtra("called", "edit");
+                    Intent intent = new Intent(context, EditBahanActivity.class);
                     intent.putExtra("bahan", bahan_list.get(position));
                     context.startActivity(intent);
                 }
