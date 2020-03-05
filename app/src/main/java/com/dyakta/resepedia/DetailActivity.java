@@ -13,6 +13,9 @@ import androidx.appcompat.widget.Toolbar;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class DetailActivity extends AppCompatActivity {
@@ -23,10 +26,11 @@ public class DetailActivity extends AppCompatActivity {
     public static final String EXTRA_DESC = "extra_desc";
     public static final String EXTRA_BAHAN = "extra_bahan";
     public static final String EXTRA_LANGKAH = "extra_langkah";
-    public static final Double EXTRA_QUANTITY = 0.0;
+    public static final String EXTRA_QUANTITY = "extra_quantity";
     private EditText et_porsi;
     private Button btn_hitung;
-    Double hasil,v1;
+    Double v1;
+    List<Double> hasil = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,18 +62,21 @@ public class DetailActivity extends AppCompatActivity {
         String thumbResep = getIntent().getStringExtra(EXTRA_THUMB);
         String judulResep = getIntent().getStringExtra(EXTRA_JUDUL);
         String deskripsiResep = getIntent().getStringExtra(EXTRA_DESC);
-        double kuantitasResep = getIntent().getDoubleExtra(String.valueOf(EXTRA_QUANTITY),0.0);
-        String bahanMakan = getIntent().getStringExtra(EXTRA_BAHAN);
+        double[] kuantitasResep = getIntent().getDoubleArrayExtra(EXTRA_QUANTITY);
+        //String[] bahanMakan = getIntent().getStringArrayExtra(EXTRA_BAHAN);
         String langkahMasak = getIntent().getStringExtra(EXTRA_LANGKAH);
 
+        ResepPost resepPost = getIntent().getParcelableExtra("resep");
 
-        String gbr = gambarResep;
-        String thumb = thumbResep;
-        String text =  judulResep;
-        String text2 =  deskripsiResep;
-        double textKuantitas =  kuantitasResep;
-        String text4 =  bahanMakan;
-        String text5 =  langkahMasak;
+        String gbr = resepPost.getImage_url();
+        String thumb = resepPost.getThumb();
+        String judul1 =  resepPost.getJudul();
+        String desc1 =  resepPost.getDesc();
+        List<Double> quantitas = resepPost.getQuantitas();
+        List<String> bahanMakan = resepPost.getBahan();
+        //double textKuantitas =  kuantitasResep;
+        //String text4 =  bahanMakan;
+        String langkah1 =  resepPost.getLangkah();
 
 
         RequestOptions requestOptions = new RequestOptions();
@@ -82,19 +89,21 @@ public class DetailActivity extends AppCompatActivity {
 
 
         setBlogImage(gbr,thumb);
-        judul.setText(text);
-        desc.setText(text2);
-        bahan.setText(text4);
-        langkah.setText(text5);
-        kuantitas.setText(String.valueOf(textKuantitas));
+        judul.setText(judul1);
+        desc.setText(desc1);
+        bahan.setText(bahanMakan.toString());
+        langkah.setText(langkah1);
+        kuantitas.setText(quantitas.toString());
 
         btn_hitung.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hasil.clear();
                 v1 = Double.parseDouble(et_porsi.getText().toString());
-                hasil = v1 * textKuantitas;
-                String porsi = Double.toString(hasil);
-                kuantitas.setText(porsi);
+                for (int i = 0; i < quantitas.size(); i++) {
+                    hasil.add(v1 * quantitas.get(i));
+                }
+                kuantitas.setText(hasil.toString());
                 et_porsi.getText().clear();
 
             }

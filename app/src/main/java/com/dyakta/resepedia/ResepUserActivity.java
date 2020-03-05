@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -20,6 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -163,8 +165,8 @@ public class ResepUserActivity extends AppCompatActivity {
         intent.putExtra(DetailActivity.EXTRA_THUMB,data.getThumb());
         intent.putExtra(DetailActivity.EXTRA_JUDUL, data.getJudul());
         intent.putExtra(DetailActivity.EXTRA_DESC, data.getDesc());
-        intent.putExtra(String.valueOf(DetailActivity.EXTRA_QUANTITY), data.getQuantitas());
-        intent.putExtra(DetailActivity.EXTRA_BAHAN, data.getBahan());
+//        intent.putExtra(String.valueOf(DetailActivity.EXTRA_QUANTITY), (Serializable) data.getQuantitas());
+        intent.putExtra(DetailActivity.EXTRA_BAHAN, (Parcelable) data.getBahan());
         intent.putExtra(DetailActivity.EXTRA_LANGKAH, data.getLangkah());
         startActivity(intent);
     }

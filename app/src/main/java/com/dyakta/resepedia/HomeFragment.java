@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,12 +121,22 @@ public class HomeFragment extends Fragment {
                                             if (task.isSuccessful()) {
                                                 Admin admin = task.getResult().toObject(Admin.class);
                                                 if (isFirstPageFirstLoad) {
+                                                    try {
+                                                        adminList.add(admin);
+                                                        resep_list.add(resepPost);
+                                                    }catch (Exception e){
+                                                        e.printStackTrace();
+                                                    }
 
-                                                    adminList.add(admin);
-                                                    resep_list.add(resepPost);
+
                                                 } else {
-                                                    adminList.add(0, admin);
-                                                    resep_list.add(0, resepPost);
+                                                    try {
+                                                        adminList.add(0, admin);
+                                                        resep_list.add(0, resepPost);
+                                                    }catch (Exception ee){
+                                                        ee.printStackTrace();
+                                                    }
+
                                                 }
 
                                                 resepRecyclerAdapter.notifyDataSetChanged();
@@ -145,13 +157,14 @@ public class HomeFragment extends Fragment {
 
     private void showData(ResepPost data) {
         Intent intent = new Intent(getActivity(), DetailActivity.class);
-        intent.putExtra(DetailActivity.EXTRA_GAMBAR,data.getImage_url());
-        intent.putExtra(DetailActivity.EXTRA_THUMB,data.getThumb());
-        intent.putExtra(DetailActivity.EXTRA_JUDUL, data.getJudul());
-        intent.putExtra(DetailActivity.EXTRA_DESC, data.getDesc());
-        intent.putExtra(String.valueOf(DetailActivity.EXTRA_QUANTITY), data.getQuantitas());
-        intent.putExtra(DetailActivity.EXTRA_BAHAN, data.getBahan());
-        intent.putExtra(DetailActivity.EXTRA_LANGKAH, data.getLangkah());
+//        intent.putExtra(DetailActivity.EXTRA_GAMBAR,data.getImage_url());
+//        intent.putExtra(DetailActivity.EXTRA_THUMB,data.getThumb());
+//        intent.putExtra(DetailActivity.EXTRA_JUDUL, data.getJudul());
+//        intent.putExtra(DetailActivity.EXTRA_DESC, data.getDesc());
+//        intent.pu(DetailActivity.EXTRA_QUANTITY,  data.getQuantitas());
+//        intent.putStringArrayListExtra(DetailActivity.EXTRA_BAHAN, (ArrayList<String>) data.getBahan());
+//        intent.putExtra(DetailActivity.EXTRA_LANGKAH, data.getLangkah());
+        intent.putExtra("resep", data);
         startActivity(intent);
     }
 
@@ -176,10 +189,15 @@ public class HomeFragment extends Fragment {
                                     @Override
                                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                         if (task.isSuccessful()){
+                                            try {
                                             Admin admin = task.getResult().toObject(Admin.class);
 
-                                            adminList.add(admin);
-                                            resep_list.add(resepPost);
+
+                                                adminList.add(admin);
+                                                resep_list.add(resepPost);
+                                            }catch (Exception e){
+                                                e.printStackTrace();
+                                            }
 
 
                                             resepRecyclerAdapter.notifyDataSetChanged();

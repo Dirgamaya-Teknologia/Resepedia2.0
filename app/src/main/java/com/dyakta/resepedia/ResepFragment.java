@@ -88,10 +88,20 @@ public class ResepFragment extends Fragment {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                     ResepPost resepPost = documentChange.getDocument().toObject(ResepPost.class);
+
                                     if (task.isSuccessful()) {
-                                        resep_list.add(resepPost);
+                                        try {
+                                            resep_list.add(resepPost);
+                                        }catch (Exception e1){
+                                            e1.printStackTrace();
+                                        }
+
                                     } else {
-                                        resep_list.add(0, resepPost);
+                                        try {
+                                            resep_list.add(0, resepPost);
+                                        }catch (Exception e1){
+                                            e1.printStackTrace();
+                                        }
                                     }
                                     resepRecyclerCRUDAdapter.notifyDataSetChanged();
                                 }

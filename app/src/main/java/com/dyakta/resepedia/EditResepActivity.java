@@ -41,6 +41,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -135,8 +136,8 @@ public class EditResepActivity extends AppCompatActivity {
         String judul = resepPost.getJudul();
         String desc = resepPost.getDesc();
         double porsi = resepPost.getPorsi();
-        String bahan = resepPost.getBahan();
-        double quantitas = resepPost.getQuantitas();
+        List<String> bahan = resepPost.getBahan();
+        List<Double> quantitas = resepPost.getQuantitas();
         String langkah = resepPost.getLangkah();
 
         edtJudul.setText(judul);

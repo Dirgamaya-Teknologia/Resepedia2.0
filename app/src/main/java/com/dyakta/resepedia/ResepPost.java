@@ -4,41 +4,33 @@ package com.dyakta.resepedia;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class ResepPost extends ResepPostId implements Parcelable {
 
-    private String id, judul,desc,jenis_resep,bahan,langkah,image_url,thumb,user_id;
-    private Double porsi,quantitas;
+    private String id, judul,desc,jenis_resep,langkah,image_url,thumb,user_id;
+    private Double porsi;
+    private List<String> bahan;
+    private List<Double> quantitas;
+
 
 
     public ResepPost() {
     }
 
-    public ResepPost(String judul, String deskripsi, String jenis_resep, String bahan, String langkah, String image_url, String thumb, String user_id, Double porsi, Double quantitas) {
-        this.judul = judul;
-        this.desc = deskripsi;
-        this.jenis_resep = jenis_resep;
-        this.bahan = bahan;
-        this.langkah = langkah;
-        this.image_url = image_url;
-        this.thumb = thumb;
-        this.user_id = user_id;
-        this.porsi = porsi;
-        this.quantitas = quantitas;
-    }
-
-    public ResepPost(String id, String judul, String desc, String jenis_resep, String bahan, String langkah, String image_url, String thumb, String user_id, Double porsi, Double quantitas) {
+    public ResepPost(String id, String judul, String desc, String jenis_resep, String langkah, String image_url, String thumb, String user_id, Double porsi, List<String> bahan, List<Double> quantitas) {
         this.id = id;
         this.judul = judul;
         this.desc = desc;
         this.jenis_resep = jenis_resep;
-        this.bahan = bahan;
         this.langkah = langkah;
         this.image_url = image_url;
         this.thumb = thumb;
         this.user_id = user_id;
         this.porsi = porsi;
+        this.bahan = bahan;
         this.quantitas = quantitas;
     }
 
@@ -86,11 +78,11 @@ public class ResepPost extends ResepPostId implements Parcelable {
         this.porsi = porsi;
     }
 
-    public Double getQuantitas() {
+    public List<Double> getQuantitas() {
         return quantitas;
     }
 
-    public void setQuantitas(Double quantitas) {
+    public void setQuantitas(List<Double> quantitas) {
         this.quantitas = quantitas;
     }
 
@@ -119,14 +111,13 @@ public class ResepPost extends ResepPostId implements Parcelable {
         this.jenis_resep = jenis_resep;
     }
 
-    public String getBahan() {
+    public List<String> getBahan() {
         return bahan;
     }
 
-    public void setBahan(String bahan) {
+    public void setBahan(List<String> bahan) {
         this.bahan = bahan;
     }
-
 
     public String getLangkah() {
         return langkah;
@@ -147,13 +138,13 @@ public class ResepPost extends ResepPostId implements Parcelable {
         dest.writeString(this.judul);
         dest.writeString(this.desc);
         dest.writeString(this.jenis_resep);
-        dest.writeString(this.bahan);
         dest.writeString(this.langkah);
         dest.writeString(this.image_url);
         dest.writeString(this.thumb);
         dest.writeString(this.user_id);
         dest.writeValue(this.porsi);
-        dest.writeValue(this.quantitas);
+        dest.writeStringList(this.bahan);
+        dest.writeList(this.quantitas);
     }
 
     protected ResepPost(Parcel in) {
@@ -161,16 +152,17 @@ public class ResepPost extends ResepPostId implements Parcelable {
         this.judul = in.readString();
         this.desc = in.readString();
         this.jenis_resep = in.readString();
-        this.bahan = in.readString();
         this.langkah = in.readString();
         this.image_url = in.readString();
         this.thumb = in.readString();
         this.user_id = in.readString();
         this.porsi = (Double) in.readValue(Double.class.getClassLoader());
-        this.quantitas = (Double) in.readValue(Double.class.getClassLoader());
+        this.bahan = in.createStringArrayList();
+        this.quantitas = new ArrayList<Double>();
+        in.readList(this.quantitas, Double.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<ResepPost> CREATOR = new Parcelable.Creator<ResepPost>() {
+    public static final Creator<ResepPost> CREATOR = new Creator<ResepPost>() {
         @Override
         public ResepPost createFromParcel(Parcel source) {
             return new ResepPost(source);

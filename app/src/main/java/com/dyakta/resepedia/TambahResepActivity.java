@@ -207,8 +207,8 @@ public class TambahResepActivity extends AppCompatActivity {
                                         postMap.put("desc", deskripsi);
                                         postMap.put("porsi", hasilPorsi);
                                         postMap.put("jenis_resep", jenisResep);
-                                        postMap.put("bahan", bahan);
-                                        postMap.put("quantitas", hasilKuantitas);
+                                        postMap.put("bahan", arrayBahan);
+                                        postMap.put("quantitas", arrayQuantitas);
                                         postMap.put("langkah", langkah);
                                         postMap.put("user_id", current_user_id);
 
@@ -293,6 +293,7 @@ public class TambahResepActivity extends AppCompatActivity {
     }
 
     public void prosesPorsi() {
+        v1 = Double.parseDouble(edtPorsi.getText().toString());
         hasilPorsi = v1 / v1;  //perhitungan
         String porsi = Double.toString(hasilPorsi);
     }
