@@ -61,7 +61,7 @@ import id.zelory.compressor.Compressor;
 
 public class TambahResepActivity extends AppCompatActivity {
 
-    private EditText edtJudul, edtDeskripsi, edtPorsi, edtJenisResep, edtQuantitas, edtLangkah;
+    private EditText edtJudul, edtDeskripsi, edtPorsi, edtJenisResep, edtLangkah;
     private ImageView newPostImage;
     private Spinner spBahan;
     private LinearLayout layoutBahan;
@@ -70,7 +70,7 @@ public class TambahResepActivity extends AppCompatActivity {
     private List<Bahan> listBahan;
     private List<String> listNamaBahan;
     private Toolbar newPostToolbar;
-    Double v1, v2, hasilPorsi, hasilKuantitas;
+    private Double v1, v2, hasilPorsi, hasilKuantitas;
 
     private Uri postImageUri = null;
 //    private ProgressBar newPostProgress;
@@ -118,25 +118,6 @@ public class TambahResepActivity extends AppCompatActivity {
 
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-        CollectionReference subjectRef = firebaseFirestore.collection("Bahan");
-        spBahan = findViewById(R.id.sp_bahan);
-        List<String> subjects = new ArrayList<>();
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, subjects);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spBahan.setAdapter(adapter);
-        subjectRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        String subject = document.getString("nama");
-                        subjects.add(subject);
-                    }
-                    adapter.notifyDataSetChanged();
-                }
-            }
-        });
-
         newPostToolbar.setTitle("Tambah Resep");
         btnAddResep.setText("Tambah Resep");
 
@@ -145,22 +126,32 @@ public class TambahResepActivity extends AppCompatActivity {
         btnAddBahan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                final View rowView = inflater.inflate(R.layout.field_bahan, null);
-                layoutBahan.addView(rowView, layoutBahan.getChildCount() - 1);
+                addBahan(v);
             }
         });
 
         btnAddResep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO methode add resep and upload to firebase
                 String judul = edtJudul.getText().toString();
                 String deskripsi = edtDeskripsi.getText().toString();
                 prosesPorsi();
                 String jenisResep = edtJenisResep.getText().toString();
+
                 String bahan = spBahan.getSelectedItem().toString().trim();
-                prosesKuantitas();
+                ArrayList arrayBahan = new ArrayList();
+                ArrayList arrayQuantitas = new ArrayList();
+                for (int i = 0; i < layoutBahan.getChildCount(); i++) {
+                    LinearLayout layout = (LinearLayout) layoutBahan.getChildAt(i);
+                    Spinner spinner = (Spinner) layout.getChildAt(0);
+                    EditText editText = (EditText) layout.getChildAt(1);
+
+                    prosesKuantitas(editText);
+
+                    arrayBahan.add(spinner.getSelectedItem());
+                    arrayQuantitas.add(hasilKuantitas);
+                }
+
                 String langkah = edtLangkah.getText().toString();
                 if (!TextUtils.isEmpty(judul) && !TextUtils.isEmpty(deskripsi) && !TextUtils.isEmpty(bahan) && !TextUtils.isEmpty(jenisResep) && !TextUtils.isEmpty(langkah) && postImageUri != null) {
                     String id = UUID.randomUUID().toString();
@@ -255,6 +246,31 @@ public class TambahResepActivity extends AppCompatActivity {
         });
     }
 
+    private void addBahan(View v) {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        v = inflater.inflate(R.layout.field_bahan, null);
+        layoutBahan.addView(v, layoutBahan.getChildCount());
+
+        CollectionReference subjectRef = firebaseFirestore.collection("Bahan");
+        spBahan = v.findViewById(R.id.sp_bahan);
+        List<String> subjects = new ArrayList<>();
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, subjects);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spBahan.setAdapter(adapter);
+        subjectRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        String subject = document.getString("nama");
+                        subjects.add(subject);
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
+    }
+
     private void initComponent() {
         edtJudul = findViewById(R.id.edt_judul);
         edtDeskripsi = findViewById(R.id.edt_deskripsi);
@@ -262,28 +278,27 @@ public class TambahResepActivity extends AppCompatActivity {
         edtJenisResep = findViewById(R.id.edt_jenis_resep);
         layoutBahan = findViewById(R.id.layout_bahan);
         btnAddBahan = findViewById(R.id.btn_add_bahan);
-        spBahan = findViewById(R.id.sp_bahan);
+        //spBahan = findViewById(R.id.sp_bahan);
         newPostImage = findViewById(R.id.imageButton);
-        edtQuantitas = findViewById(R.id.edt_quantitas);
+        //edtQuantitas = findViewById(R.id.edt_quantitas);
         edtLangkah = findViewById(R.id.edt_langkah_langkah);
         btnAddResep = findViewById(R.id.btn_add);
         listBahan = new ArrayList<>();
     }
 
-    public void konver() {
+    public void konver(EditText edtQuantitas) {
         //konversi inputan ke double
         v1 = Double.parseDouble(edtPorsi.getText().toString());
         v2 = Double.parseDouble(edtQuantitas.getText().toString());
     }
 
     public void prosesPorsi() {
-        konver();
         hasilPorsi = v1 / v1;  //perhitungan
         String porsi = Double.toString(hasilPorsi);
     }
 
-    public void prosesKuantitas() {
-        konver();
+    public void prosesKuantitas(EditText edtQuantitas) {
+        konver(edtQuantitas);
         hasilKuantitas = v2 / v1;  //perhitungan
         String kuantitas = Double.toString(hasilKuantitas);
     }
