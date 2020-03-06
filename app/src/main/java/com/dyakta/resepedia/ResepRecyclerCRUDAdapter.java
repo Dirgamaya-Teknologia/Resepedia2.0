@@ -14,10 +14,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -27,6 +33,7 @@ public class ResepRecyclerCRUDAdapter extends RecyclerView.Adapter<ResepRecycler
     public List<ResepPost> resep_list;
     public List<Admin> admin_list;
     public Context context;
+    private List<String> arrayBahan = new ArrayList<>();
 
 //    private OnItemClickCallback onItemClickCallback;
 //
@@ -51,6 +58,18 @@ public class ResepRecyclerCRUDAdapter extends RecyclerView.Adapter<ResepRecycler
         context = viewGroup.getContext();
         firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
+        CollectionReference subjectRef = firebaseFirestore.collection("Bahan");
+        subjectRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        String subject = document.getString("nama");
+                        arrayBahan.add(subject);
+                    }
+                }
+            }
+        });
         return new ViewHolder(view);
     }
 
@@ -71,8 +90,9 @@ public class ResepRecyclerCRUDAdapter extends RecyclerView.Adapter<ResepRecycler
             viewHolder.edit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context, EditResepActivity.class);
+                    Intent intent = new Intent(context, TestBahanActivity.class);
                     intent.putExtra("resep", resep_list.get(position));
+                    intent.putStringArrayListExtra("bahan", (ArrayList<String>) arrayBahan);
                     context.startActivity(intent);
                 }
             });
@@ -92,7 +112,6 @@ public class ResepRecyclerCRUDAdapter extends RecyclerView.Adapter<ResepRecycler
                 }
             });
         }
-
     }
 
     @Override

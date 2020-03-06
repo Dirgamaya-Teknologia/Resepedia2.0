@@ -22,6 +22,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -41,7 +43,6 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,7 +59,7 @@ public class EditResepActivity extends AppCompatActivity {
     private LinearLayout layoutBahan;
     private Button btnAddBahan, btnAddResep;
     private FirebaseFirestore firebaseFirestore;
-    private List<Bahan> listBahan;
+    private List<String> bahan;
     private List<String> listNamaBahan;
     private Toolbar newPostToolbar;
     Double v1, v2, hasilPorsi, hasilKuantitas;
@@ -71,11 +72,15 @@ public class EditResepActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private Bitmap compressedImageFile;
     private String current_user_id;
+    private ArrayList<String> arrayBahan;
+    private ArrayList arrayQuantitas;
+    List<String> subjects = new ArrayList<>();
+    List<String> subjects2 = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tambah_resep);
+        setContentView(R.layout.activity_edit_resep);
         storageReference = FirebaseStorage.getInstance().getReference();
         firebaseFirestore = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
@@ -94,6 +99,7 @@ public class EditResepActivity extends AppCompatActivity {
         });
 
         initComponent();
+
         newPostImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,60 +115,9 @@ public class EditResepActivity extends AppCompatActivity {
 
         firebaseFirestore = FirebaseFirestore.getInstance();
 
-        CollectionReference subjectRef = firebaseFirestore.collection("Bahan");
-        spBahan = findViewById(R.id.sp_bahan);
-        List<String> subjects = new ArrayList<>();
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, subjects);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spBahan.setAdapter(adapter);
-        subjectRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        String subject = document.getString("nama");
-                        subjects.add(subject);
-                    }
-                    adapter.notifyDataSetChanged();
-                }
-            }
-        });
-
-        ResepPost resepPost = getIntent().getParcelableExtra("resep");
-        String id = resepPost.getId();
-        newPostToolbar.setTitle("Ubah Resep");
-        btnAddResep.setText("Ubah Resep");
-
-        String judul = resepPost.getJudul();
-        String desc = resepPost.getDesc();
-        double porsi = resepPost.getPorsi();
-        List<String> bahan = resepPost.getBahan();
-        List<Double> quantitas = resepPost.getQuantitas();
-        String langkah = resepPost.getLangkah();
-
-        edtJudul.setText(judul);
-        edtDeskripsi.setText(desc);
-        edtPorsi.setText(String.valueOf(porsi));
-
-        for (int i = 0; i < subjects.size(); i++) {
-            if (bahan.equals(subjects.get(i))) {
-                spBahan.setSelection(i);
-            }
-        }
-
-        edtQuantitas.setText(String.valueOf(quantitas));
-        edtLangkah.setText(langkah);
+        getDataFromIntent();
 
         setSupportActionBar(newPostToolbar);
-
-        btnAddBahan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                final View rowView = inflater.inflate(R.layout.field_bahan, null);
-                layoutBahan.addView(rowView, layoutBahan.getChildCount() - 1);
-            }
-        });
 
         btnAddResep.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,7 +128,19 @@ public class EditResepActivity extends AppCompatActivity {
                 prosesPorsi();
                 String jenisResep = edtJenisResep.getText().toString();
                 String bahan = spBahan.getSelectedItem().toString().trim();
-                prosesKuantitas();
+                ArrayList arrayBahan = new ArrayList();
+                ArrayList arrayQuantitas = new ArrayList();
+                for (int i = 0; i < layoutBahan.getChildCount(); i++) {
+                    LinearLayout layout = (LinearLayout) layoutBahan.getChildAt(i);
+                    Spinner spinner = (Spinner) layout.getChildAt(0);
+                    EditText editText = (EditText) layout.getChildAt(1);
+
+                    prosesKuantitas(editText);
+
+                    arrayBahan.add(spinner.getSelectedItem());
+                    arrayQuantitas.add(hasilKuantitas);
+                }
+
                 String langkah = edtLangkah.getText().toString();
                 if (!TextUtils.isEmpty(judul) && !TextUtils.isEmpty(deskripsi) && !TextUtils.isEmpty(bahan) && !TextUtils.isEmpty(jenisResep) && !TextUtils.isEmpty(langkah) && postImageUri != null) {
                     String id = UUID.randomUUID().toString();
@@ -229,8 +196,8 @@ public class EditResepActivity extends AppCompatActivity {
                                         postMap.put("desc", deskripsi);
                                         postMap.put("porsi", hasilPorsi);
                                         postMap.put("jenis_resep", jenisResep);
-                                        postMap.put("bahan", bahan);
-                                        postMap.put("quantitas", hasilKuantitas);
+                                        postMap.put("bahan", arrayBahan);
+                                        postMap.put("quantitas", arrayQuantitas);
                                         postMap.put("langkah", langkah);
                                         postMap.put("user_id", current_user_id);
 
@@ -244,7 +211,6 @@ public class EditResepActivity extends AppCompatActivity {
                                                             Intent mainIntent = new Intent(EditResepActivity.this, MainActivity.class);
                                                             startActivity(mainIntent);
                                                             finish();
-
                                                         }
                                                     }
                                                 });
@@ -252,7 +218,7 @@ public class EditResepActivity extends AppCompatActivity {
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        //Error handling
+                                        Toast.makeText(EditResepActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                                     }
                                 });
 
@@ -267,6 +233,72 @@ public class EditResepActivity extends AppCompatActivity {
         });
     }
 
+    private void getDataFromIntent() {
+        ResepPost resepPost = getIntent().getParcelableExtra("resep");
+        String id = resepPost.getId();
+        newPostToolbar.setTitle("Ubah Resep");
+        btnAddResep.setText("Ubah Resep");
+
+        String judul = resepPost.getJudul();
+        String gbr = resepPost.getImage_url();
+        String thumb = resepPost.getThumb();
+        String desc = resepPost.getDesc();
+        double porsi = resepPost.getPorsi();
+        String jenisResep = resepPost.getJenis_resep();
+        bahan = resepPost.getBahan();
+        List<Double> quantitas = resepPost.getQuantitas();
+        String langkah = resepPost.getLangkah();
+
+        setBlogImage(gbr,thumb);
+        edtJudul.setText(judul);
+        edtDeskripsi.setText(desc);
+        edtPorsi.setText(String.valueOf(porsi));
+        edtJenisResep.setText(jenisResep);
+
+        for (int i = 0; i < bahan.size(); i++) {
+            btnAddBahan.performClick();
+
+            LinearLayout layout = (LinearLayout) layoutBahan.getChildAt(i);
+            Spinner spinner = (Spinner) layout.getChildAt(0);
+            EditText editText = (EditText) layout.getChildAt(1);
+
+            Toast.makeText(this, arrayBahan.toString(), Toast.LENGTH_SHORT).show();
+            String namaBahan = bahan.get(i);
+            for (int j = 0; j < arrayBahan.size(); j++) {
+                if (namaBahan.equals(arrayBahan.get(j))) {
+                    spinner.setSelection(j);
+                }
+            }
+            editText.setText(quantitas.get(i).toString());
+        }
+        edtLangkah.setText(langkah);
+    }
+
+    public void setBlogImage(String downloadUri,String thumb){
+        ImageView gambar = findViewById(R.id.imageButton);
+
+        RequestOptions requestOptions = new RequestOptions();
+
+        requestOptions.placeholder(R.drawable.user_male);
+        Glide.with(this).applyDefaultRequestOptions(requestOptions).load(downloadUri).thumbnail(
+                Glide.with(this).load(thumb)
+        ).into(gambar);
+
+    }
+
+    public void AddBahan(View view) {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        view = inflater.inflate(R.layout.field_bahan, null);
+        layoutBahan.addView(view, layoutBahan.getChildCount());
+
+        arrayBahan = getIntent().getStringArrayListExtra("bahan");
+
+        spBahan = view.findViewById(R.id.sp_bahan);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, arrayBahan);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spBahan.setAdapter(adapter);
+    }
+
     private void initComponent() {
         edtJudul = findViewById(R.id.edt_judul);
         edtDeskripsi = findViewById(R.id.edt_deskripsi);
@@ -274,28 +306,29 @@ public class EditResepActivity extends AppCompatActivity {
         edtJenisResep = findViewById(R.id.edt_jenis_resep);
         layoutBahan = findViewById(R.id.layout_bahan);
         btnAddBahan = findViewById(R.id.btn_add_bahan);
-        spBahan = findViewById(R.id.sp_bahan);
+        //spBahan = findViewById(R.id.sp_bahan);
         newPostImage = findViewById(R.id.imageButton);
         edtQuantitas = findViewById(R.id.edt_quantitas);
         edtLangkah = findViewById(R.id.edt_langkah_langkah);
         btnAddResep = findViewById(R.id.btn_add);
-        listBahan = new ArrayList<>();
+        //listBahan = new ArrayList<>();
+        arrayBahan = new ArrayList<>();
     }
 
-    public void konver() {
+    public void konver(EditText edtQuantitas) {
         //konversi inputan ke double
         v1 = Double.parseDouble(edtPorsi.getText().toString());
         v2 = Double.parseDouble(edtQuantitas.getText().toString());
     }
 
     public void prosesPorsi() {
-        konver();
+        v1 = Double.parseDouble(edtPorsi.getText().toString());
         hasilPorsi = v1 / v1;  //perhitungan
         String porsi = Double.toString(hasilPorsi);
     }
 
-    public void prosesKuantitas() {
-        konver();
+    public void prosesKuantitas(EditText edtQuantitas) {
+        konver(edtQuantitas);
         hasilKuantitas = v2 / v1;  //perhitungan
         String kuantitas = Double.toString(hasilKuantitas);
     }
