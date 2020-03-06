@@ -91,9 +91,9 @@ public class DetailActivity extends AppCompatActivity {
         setBlogImage(gbr,thumb);
         judul.setText(judul1);
         desc.setText(desc1);
-        bahan.setText(bahanMakan.toString());
+        bahan.setText(bahanMakan.toString().replaceAll("^.|.$", "").replace(", ", "\n"));
         langkah.setText(langkah1);
-        kuantitas.setText(quantitas.toString());
+        kuantitas.setText(quantitas.toString().replaceAll("^.|.$", "").replace(", ", "\n"));
 
         btn_hitung.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,7 +103,7 @@ public class DetailActivity extends AppCompatActivity {
                 for (int i = 0; i < quantitas.size(); i++) {
                     hasil.add(v1 * quantitas.get(i));
                 }
-                kuantitas.setText(hasil.toString());
+                kuantitas.setText(hasil.toString().replaceAll("^.|.$", "").replace(", ", "\n"));
                 et_porsi.getText().clear();
 
             }
