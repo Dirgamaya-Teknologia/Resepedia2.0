@@ -65,7 +65,9 @@ public class ResepRecyclerCRUDAdapter extends RecyclerView.Adapter<ResepRecycler
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         String subject = document.getString("nama");
-                        arrayBahan.add(subject);
+                        if (arrayBahan.size() < task.getResult().size()) {
+                            arrayBahan.add(subject);
+                        }
                     }
                 }
             }

@@ -276,7 +276,6 @@ public class EditResepActivity extends AppCompatActivity {
             Spinner spinner = (Spinner) layout.getChildAt(0);
             EditText editText = (EditText) layout.getChildAt(2);
 
-            Toast.makeText(this, arrayBahan.toString(), Toast.LENGTH_SHORT).show();
             String namaBahan = bahan.get(i);
             for (int j = 0; j < arrayBahan.size(); j++) {
                 if (namaBahan.equals(arrayBahan.get(j))) {
