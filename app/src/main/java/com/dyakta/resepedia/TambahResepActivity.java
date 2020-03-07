@@ -64,6 +64,7 @@ public class TambahResepActivity extends AppCompatActivity {
     private EditText edtJudul, edtDeskripsi, edtPorsi, edtJenisResep, edtLangkah;
     private ImageView newPostImage;
     private Spinner spBahan;
+    private TextView txt_satuan;
     private LinearLayout layoutBahan;
     private Button btnAddBahan, btnAddResep;
     private FirebaseFirestore firebaseFirestore;
@@ -141,14 +142,17 @@ public class TambahResepActivity extends AppCompatActivity {
                 String bahan = spBahan.getSelectedItem().toString().trim();
                 ArrayList arrayBahan = new ArrayList();
                 ArrayList arrayQuantitas = new ArrayList();
+                ArrayList arraySatuan = new ArrayList();
                 for (int i = 0; i < layoutBahan.getChildCount(); i++) {
                     LinearLayout layout = (LinearLayout) layoutBahan.getChildAt(i);
                     Spinner spinner = (Spinner) layout.getChildAt(0);
-                    EditText editText = (EditText) layout.getChildAt(1);
+                    TextView textView = (TextView) layout.getChildAt(1);
+                    EditText editText = (EditText) layout.getChildAt(2);
 
                     prosesKuantitas(editText);
 
                     arrayBahan.add(spinner.getSelectedItem());
+                    arraySatuan.add(textView.getText());
                     arrayQuantitas.add(hasilKuantitas);
                 }
 
@@ -208,7 +212,7 @@ public class TambahResepActivity extends AppCompatActivity {
                                         postMap.put("porsi", hasilPorsi);
                                         postMap.put("jenis_resep", jenisResep);
                                         postMap.put("bahan", arrayBahan);
-//                                        postMap.put("satuan", );
+//                                        postMap.put("satuan", arraySatuan);
                                         postMap.put("quantitas", arrayQuantitas);
                                         postMap.put("langkah", langkah);
                                         postMap.put("user_id", current_user_id);
@@ -254,6 +258,7 @@ public class TambahResepActivity extends AppCompatActivity {
 
         CollectionReference subjectRef = firebaseFirestore.collection("Bahan");
         spBahan = v.findViewById(R.id.sp_bahan);
+        txt_satuan = v.findViewById(R.id.txt_satuan);
         List<String> subjects = new ArrayList<>();
         List<String> subjects2 = new ArrayList<>();
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, subjects);
@@ -262,12 +267,17 @@ public class TambahResepActivity extends AppCompatActivity {
         subjectRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
                 if (task.isSuccessful()) {
+
                     for (QueryDocumentSnapshot document : task.getResult()) {
+                        Bahan bahan = document.toObject(Bahan.class);
+
                         String subject = document.getString("nama");
-                        String subject2 = document.getString("satuan");
                         subjects.add(subject);
-                        subjects2.add(subject2);
+                        subjects2.add(bahan.getSatuan());
+                        txt_satuan.setText(subjects2.toString().replaceAll("^.|.$", "").replace(", ", ""));
+                        txt_satuan.setVisibility(View.GONE);
                     }
                     adapter.notifyDataSetChanged();
                 }

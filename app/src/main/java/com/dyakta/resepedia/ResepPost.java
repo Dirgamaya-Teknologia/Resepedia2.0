@@ -13,6 +13,7 @@ public class ResepPost extends ResepPostId implements Parcelable {
     private String id, judul,desc,jenis_resep,langkah,image_url,thumb,user_id;
     private Double porsi;
     private List<String> bahan;
+    private List<String> satuan;
     private List<Double> quantitas;
 
 
@@ -20,7 +21,7 @@ public class ResepPost extends ResepPostId implements Parcelable {
     public ResepPost() {
     }
 
-    public ResepPost(String id, String judul, String desc, String jenis_resep, String langkah, String image_url, String thumb, String user_id, Double porsi, List<String> bahan, List<Double> quantitas) {
+    public ResepPost(String id, String judul, String desc, String jenis_resep, String langkah, String image_url, String thumb, String user_id, Double porsi, List<String> bahan, List<String> satuan, List<Double> quantitas) {
         this.id = id;
         this.judul = judul;
         this.desc = desc;
@@ -31,7 +32,16 @@ public class ResepPost extends ResepPostId implements Parcelable {
         this.user_id = user_id;
         this.porsi = porsi;
         this.bahan = bahan;
+        this.satuan = satuan;
         this.quantitas = quantitas;
+    }
+
+    public List<String> getSatuan() {
+        return satuan;
+    }
+
+    public void setSatuan(List<String> satuan) {
+        this.satuan = satuan;
     }
 
     public String getId() {

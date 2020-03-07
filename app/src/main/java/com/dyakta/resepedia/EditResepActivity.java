@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,6 +57,7 @@ public class EditResepActivity extends AppCompatActivity {
     private EditText edtJudul, edtDeskripsi, edtPorsi, edtJenisResep, edtQuantitas, edtLangkah;
     private ImageView newPostImage;
     private Spinner spBahan;
+    private ProgressBar progressBar;
     private LinearLayout layoutBahan;
     private Button btnAddBahan, btnAddResep;
     private FirebaseFirestore firebaseFirestore;
@@ -76,6 +78,7 @@ public class EditResepActivity extends AppCompatActivity {
     private ArrayList arrayQuantitas;
     List<String> subjects = new ArrayList<>();
     List<String> subjects2 = new ArrayList<>();
+    public String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,18 +125,21 @@ public class EditResepActivity extends AppCompatActivity {
         btnAddResep.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
+                ResepPost resepPost = getIntent().getParcelableExtra("resep");
+                id = resepPost.getId();
                 // TODO methode add resep and upload to firebase
                 String judul = edtJudul.getText().toString();
                 String deskripsi = edtDeskripsi.getText().toString();
                 prosesPorsi();
                 String jenisResep = edtJenisResep.getText().toString();
-                String bahan = spBahan.getSelectedItem().toString().trim();
+                //String bahan = spBahan.getSelectedItem().toString().trim();
                 ArrayList arrayBahan = new ArrayList();
                 ArrayList arrayQuantitas = new ArrayList();
                 for (int i = 0; i < layoutBahan.getChildCount(); i++) {
                     LinearLayout layout = (LinearLayout) layoutBahan.getChildAt(i);
                     Spinner spinner = (Spinner) layout.getChildAt(0);
-                    EditText editText = (EditText) layout.getChildAt(1);
+                    EditText editText = (EditText) layout.getChildAt(2);
 
                     prosesKuantitas(editText);
 
@@ -142,11 +148,10 @@ public class EditResepActivity extends AppCompatActivity {
                 }
 
                 String langkah = edtLangkah.getText().toString();
-                if (!TextUtils.isEmpty(judul) && !TextUtils.isEmpty(deskripsi) && !TextUtils.isEmpty(bahan) && !TextUtils.isEmpty(jenisResep) && !TextUtils.isEmpty(langkah) && postImageUri != null) {
-                    String id = UUID.randomUUID().toString();
+                if (!TextUtils.isEmpty(judul) && !TextUtils.isEmpty(deskripsi) && !TextUtils.isEmpty(jenisResep) && !TextUtils.isEmpty(langkah) && postImageUri != null) {
+                    //String id = UUID.randomUUID().toString();
 
                     final String randomName = UUID.randomUUID().toString();
-
                     final StorageReference filePath = storageReference.child("post_images").child(randomName);
                     filePath.putFile(postImageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                         @Override
@@ -186,7 +191,7 @@ public class EditResepActivity extends AppCompatActivity {
                                     @Override
                                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                         Task<Uri> uriTask = taskSnapshot.getMetadata().getReference().getDownloadUrl();
-                                        String downloadThumbUri = uriTask.toString();
+                                       String downloadThumbUri = uriTask.toString();
 
                                         Map<String, Object> postMap = new HashMap<>();
                                         postMap.put("id", randomName);
@@ -201,19 +206,27 @@ public class EditResepActivity extends AppCompatActivity {
                                         postMap.put("langkah", langkah);
                                         postMap.put("user_id", current_user_id);
 
-                                        firebaseFirestore.collection("resep").document(randomName).update(postMap)
+                                        firebaseFirestore.collection("Resep").document(id).update(postMap)
                                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
                                                     public void onComplete(@NonNull Task<Void> task) {
                                                         if (task.isSuccessful()) {
-
+                                                            progressBar.setVisibility(View.GONE);
                                                             Toast.makeText(EditResepActivity.this, "Resep telah diubahkan", Toast.LENGTH_LONG).show();
                                                             Intent mainIntent = new Intent(EditResepActivity.this, MainActivity.class);
                                                             startActivity(mainIntent);
                                                             finish();
                                                         }
                                                     }
-                                                });
+                                                }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+
+                                                Toast.makeText(EditResepActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+
+
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
                                     @Override
@@ -228,6 +241,7 @@ public class EditResepActivity extends AppCompatActivity {
                             }
                         }
                     });
+
                 }
             }
         });
@@ -235,7 +249,7 @@ public class EditResepActivity extends AppCompatActivity {
 
     private void getDataFromIntent() {
         ResepPost resepPost = getIntent().getParcelableExtra("resep");
-        String id = resepPost.getId();
+        id = resepPost.getId();
         newPostToolbar.setTitle("Ubah Resep");
         btnAddResep.setText("Ubah Resep");
 
@@ -260,7 +274,7 @@ public class EditResepActivity extends AppCompatActivity {
 
             LinearLayout layout = (LinearLayout) layoutBahan.getChildAt(i);
             Spinner spinner = (Spinner) layout.getChildAt(0);
-            EditText editText = (EditText) layout.getChildAt(1);
+            EditText editText = (EditText) layout.getChildAt(2);
 
             Toast.makeText(this, arrayBahan.toString(), Toast.LENGTH_SHORT).show();
             String namaBahan = bahan.get(i);
@@ -306,6 +320,7 @@ public class EditResepActivity extends AppCompatActivity {
         edtJenisResep = findViewById(R.id.edt_jenis_resep);
         layoutBahan = findViewById(R.id.layout_bahan);
         btnAddBahan = findViewById(R.id.btn_add_bahan);
+        progressBar = findViewById(R.id.progressBar2);
         //spBahan = findViewById(R.id.sp_bahan);
         newPostImage = findViewById(R.id.imageButton);
         edtQuantitas = findViewById(R.id.edt_quantitas);

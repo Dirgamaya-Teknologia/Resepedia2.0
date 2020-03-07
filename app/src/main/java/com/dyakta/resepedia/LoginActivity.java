@@ -29,14 +29,14 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        FirebaseUser currentUser = mFirebaseAuth.getCurrentUser();
-        if (currentUser != null){
-            setMain();
-        }
-    }
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        FirebaseUser currentUser = mFirebaseAuth.getCurrentUser();
+//        if (currentUser != null){
+//            setMain();
+//        }
+//    }
 
     private void setMain() {
         startActivity(new Intent(LoginActivity.this, MainActivity.class));
@@ -60,17 +60,17 @@ public class LoginActivity extends AppCompatActivity {
 
 
         //view
-        toolbar = findViewById(R.id.toolbar2);
-        toolbar.setTitle("Masuk");
-        setSupportActionBar(toolbar);
-
-        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+//        toolbar = findViewById(R.id.toolbar2);
+//        toolbar.setTitle("Masuk");
+//        setSupportActionBar(toolbar);
+//
+//        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+//        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                finish();
+//            }
+//        });
 
         txt_lupaPass.setOnClickListener(new View.OnClickListener() {
             @Override

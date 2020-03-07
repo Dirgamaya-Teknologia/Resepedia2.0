@@ -90,18 +90,9 @@ public class ResepFragment extends Fragment {
                                     ResepPost resepPost = documentChange.getDocument().toObject(ResepPost.class);
 
                                     if (task.isSuccessful()) {
-                                        try {
                                             resep_list.add(resepPost);
-                                        }catch (Exception e1){
-                                            e1.printStackTrace();
-                                        }
-
                                     } else {
-                                        try {
                                             resep_list.add(0, resepPost);
-                                        }catch (Exception e1){
-                                            e1.printStackTrace();
-                                        }
                                     }
                                     resepRecyclerCRUDAdapter.notifyDataSetChanged();
                                 }

@@ -24,16 +24,16 @@ public class RegisAdminActivity extends AppCompatActivity {
     //Firebase Auth
     private FirebaseAuth mFirebaseAuth;
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mFirebaseAuth.getCurrentUser();
-        if (currentUser != null){
-            setMain();
-        }
-//        updateUI(currentUser);
-    }
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        // Check if user is signed in (non-null) and update UI accordingly.
+//        FirebaseUser currentUser = mFirebaseAuth.getCurrentUser();
+//        if (currentUser != null){
+//            setMain();
+//        }
+////        updateUI(currentUser);
+//    }
 
     private void setMain() {
         startActivity(new Intent(RegisAdminActivity.this, MainActivity.class));

@@ -121,22 +121,11 @@ public class HomeFragment extends Fragment {
                                             if (task.isSuccessful()) {
                                                 Admin admin = task.getResult().toObject(Admin.class);
                                                 if (isFirstPageFirstLoad) {
-                                                    try {
                                                         adminList.add(admin);
                                                         resep_list.add(resepPost);
-                                                    }catch (Exception e){
-                                                        e.printStackTrace();
-                                                    }
-
-
                                                 } else {
-                                                    try {
                                                         adminList.add(0, admin);
                                                         resep_list.add(0, resepPost);
-                                                    }catch (Exception ee){
-                                                        ee.printStackTrace();
-                                                    }
-
                                                 }
 
                                                 resepRecyclerAdapter.notifyDataSetChanged();
