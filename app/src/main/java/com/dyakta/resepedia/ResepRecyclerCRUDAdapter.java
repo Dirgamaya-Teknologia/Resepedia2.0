@@ -1,6 +1,8 @@
 package com.dyakta.resepedia;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -102,15 +104,36 @@ public class ResepRecyclerCRUDAdapter extends RecyclerView.Adapter<ResepRecycler
             viewHolder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    firebaseFirestore.collection("Resep").document(resep_list.get(position).getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            resep_list.remove(position);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    builder.setMessage("Apakah anda yakin menghapus resep ini ?")
+                            .setPositiveButton("Hapus", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // FIRE ZE MISSILES!
+                                    firebaseFirestore.collection("Resep").document(resep_list.get(position).getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            resep_list.remove(position);
 
 
-                            notifyDataSetChanged();
-                        }
-                    });
+                                            notifyDataSetChanged();
+                                        }
+                                    });
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // User cancelled the dialog
+                                    dialog.cancel();
+                                }
+                            });
+
+
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+
+
+
+
                 }
             });
         }
@@ -148,16 +171,16 @@ public class ResepRecyclerCRUDAdapter extends RecyclerView.Adapter<ResepRecycler
 
 
 
-
-        public void setUserData(String userName, String userImage) {
-            blogUserImage = mView.findViewById(R.id.resep_user_image);
-            blogUserName = mView.findViewById(R.id.txt_name_post);
-            blogUserName.setText(userName);
-            RequestOptions placeholderOption = new RequestOptions();
-            placeholderOption.placeholder(R.drawable.user_male);
-
-            Glide.with(context).applyDefaultRequestOptions(placeholderOption).load(userImage).into(blogUserImage);
-        }
+//
+//        public void setUserData(String userName, String userImage) {
+//            blogUserImage = mView.findViewById(R.id.resep_user_image);
+//            blogUserName = mView.findViewById(R.id.txt_name_post);
+//            blogUserName.setText(userName);
+//            RequestOptions placeholderOption = new RequestOptions();
+//            placeholderOption.placeholder(R.drawable.user_male);
+//
+//            Glide.with(context).applyDefaultRequestOptions(placeholderOption).load(userImage).into(blogUserImage);
+//        }
     }
 
     }

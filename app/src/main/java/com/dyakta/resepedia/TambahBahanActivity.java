@@ -27,6 +27,7 @@ public class TambahBahanActivity extends AppCompatActivity {
 
     private Toolbar newPostToolbar;
     private Button btn_bahan;
+    private ProgressBar pg_bahan;
     private EditText mNamaBahan;
     private FirebaseFirestore firebaseFirestore;
 
@@ -37,6 +38,7 @@ public class TambahBahanActivity extends AppCompatActivity {
 
         btn_bahan = findViewById(R.id.btn_tambah_bahan);
         mNamaBahan = findViewById(R.id.et_nama_bahan);
+        pg_bahan = findViewById(R.id.progressBar);
 
         newPostToolbar = findViewById(R.id.toolbar4);
 
@@ -69,6 +71,8 @@ public class TambahBahanActivity extends AppCompatActivity {
         btn_bahan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                pg_bahan.setVisibility(View.VISIBLE);
+
                 String nama = mNamaBahan.getText().toString().trim();
                 String satuan = satuan_dropdown.getSelectedItem().toString().trim();
                 String tipe = tipe_dropdown.getSelectedItem().toString().trim();
@@ -91,6 +95,7 @@ public class TambahBahanActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(TambahBahanActivity.this, "Berhasil Menambahkan", Toast.LENGTH_SHORT).show();
+                        pg_bahan.setVisibility(View.GONE);
                         startActivity(new Intent(TambahBahanActivity.this, MainActivity.class));
                     }
                 })

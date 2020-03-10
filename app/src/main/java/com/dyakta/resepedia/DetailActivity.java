@@ -13,6 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +26,10 @@ public class DetailActivity extends AppCompatActivity {
     public static final String EXTRA_JUDUL = "extra_judul";
     public static final String EXTRA_DESC = "extra_desc";
     public static final String EXTRA_BAHAN = "extra_bahan";
+    public static final String EXTRA_SATUAN = "extra_satuan";
     public static final String EXTRA_LANGKAH = "extra_langkah";
     public static final String EXTRA_QUANTITY = "extra_quantity";
+    private static DecimalFormat decimalFormat;
     private EditText et_porsi;
     private Button btn_hitung;
     Double v1;
@@ -49,11 +52,11 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
-        ImageView gambar = findViewById(R.id.imageView9);
         TextView judul = findViewById(R.id.judul_detail_resep);
         TextView desc = findViewById(R.id.txt_deskripsi_detail_resep);
         TextView kuantitas = findViewById(R.id.txt_kuantitas);
         TextView bahan = findViewById(R.id.txt_bahan_detail_resep);
+        TextView sat = findViewById(R.id.txt_satuan_detail);
         TextView langkah = findViewById(R.id.txt_langkah_detail_resep);
         btn_hitung = findViewById(R.id.btn_hitung);
         et_porsi = findViewById(R.id.et_porsi);
@@ -68,30 +71,33 @@ public class DetailActivity extends AppCompatActivity {
 
         ResepPost resepPost = getIntent().getParcelableExtra("resep");
 
-        String gbr = resepPost.getImage_url();
-        String thumb = resepPost.getThumb();
+//        String gbr = resepPost.getImage_url();
+//        String thumb = resepPost.getThumb();
         String judul1 =  resepPost.getJudul();
         String desc1 =  resepPost.getDesc();
         List<Double> quantitas = resepPost.getQuantitas();
         List<String> bahanMakan = resepPost.getBahan();
+        List<String> satuan = resepPost.getSatuan();
         //double textKuantitas =  kuantitasResep;
         //String text4 =  bahanMakan;
         String langkah1 =  resepPost.getLangkah();
+//        int i = Integer.valueOf(.intValue());
 
 
-        RequestOptions requestOptions = new RequestOptions();
+//        RequestOptions requestOptions = new RequestOptions();
+//
+//        requestOptions.placeholder(R.drawable.user_male);
+//        Glide.with(DetailActivity.this).applyDefaultRequestOptions(requestOptions).load(gbr).thumbnail(
+//                Glide.with(DetailActivity.this).load(thumb)
+//        ).into(gambar);
 
-        requestOptions.placeholder(R.drawable.user_male);
-        Glide.with(DetailActivity.this).applyDefaultRequestOptions(requestOptions).load(gbr).thumbnail(
-                Glide.with(DetailActivity.this).load(thumb)
-        ).into(gambar);
 
 
-
-        setBlogImage(gbr,thumb);
+//        setBlogImage(gbr,thumb);
         judul.setText(judul1);
         desc.setText(desc1);
         bahan.setText(bahanMakan.toString().replaceAll("^.|.$", "").replace(", ", "\n"));
+        sat.setText(satuan.toString().replaceAll("^.|.$", "").replace(", ", "\n"));
         langkah.setText(langkah1);
         kuantitas.setText(quantitas.toString().replaceAll("^.|.$", "").replace(", ", "\n"));
 
@@ -112,17 +118,17 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
-    public void setBlogImage(String downloadUri,String thumb){
-        ImageView gambar = findViewById(R.id.imageView9);
-
-        RequestOptions requestOptions = new RequestOptions();
-
-        requestOptions.placeholder(R.drawable.user_male);
-        Glide.with(this).applyDefaultRequestOptions(requestOptions).load(downloadUri).thumbnail(
-                Glide.with(this).load(thumb)
-        ).into(gambar);
-
-    }
+//    public void setBlogImage(String downloadUri,String thumb){
+//        ImageView gambar = findViewById(R.id.imageView9);
+//
+//        RequestOptions requestOptions = new RequestOptions();
+//
+//        requestOptions.placeholder(R.drawable.user_male);
+//        Glide.with(this).applyDefaultRequestOptions(requestOptions).load(downloadUri).thumbnail(
+//                Glide.with(this).load(thumb)
+//        ).into(gambar);
+//
+//    }
 
 //    public void setUserImage(String userImageUri){
 //        CircleImageView userimage = findViewById(R.id.iv_userImage_detail);

@@ -22,8 +22,8 @@ import com.google.firebase.auth.FirebaseUser;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText et_emailLogin, et_passLogin;
-    private TextView txt_lupaPass, txt_buatAkun;
-    private Button btn_masukLogin, btn_daftar;
+    private TextView txt_lupaPass,btn_daftar;
+    private Button btn_masukLogin;
     private FirebaseAuth mFirebaseAuth;
     Toolbar toolbar;
 

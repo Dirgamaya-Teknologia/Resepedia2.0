@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -27,6 +28,7 @@ public class EditBahanActivity extends AppCompatActivity {
     private Toolbar newPostToolbar;
     private Button btn_bahan;
     private EditText mNamaBahan;
+    private ProgressBar pg_edit_bahan;
     private FirebaseFirestore firebaseFirestore;
 
     @Override
@@ -36,6 +38,7 @@ public class EditBahanActivity extends AppCompatActivity {
 
         btn_bahan = findViewById(R.id.btn_tambah_bahan);
         mNamaBahan = findViewById(R.id.et_nama_bahan);
+        pg_edit_bahan = findViewById(R.id.progressBar);
 
         newPostToolbar = findViewById(R.id.toolbar4);
 
@@ -92,6 +95,7 @@ public class EditBahanActivity extends AppCompatActivity {
         btn_bahan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                pg_edit_bahan.setVisibility(View.VISIBLE);
                 String nama = mNamaBahan.getText().toString().trim();
                 String satuan = satuan_dropdown.getSelectedItem().toString().trim();
                 String tipe = tipe_dropdown.getSelectedItem().toString().trim();
@@ -112,7 +116,8 @@ public class EditBahanActivity extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(EditBahanActivity.this, "Berhasil Mengubahkan", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditBahanActivity.this, "Berhasil Mengubah", Toast.LENGTH_SHORT).show();
+                        pg_edit_bahan.setVisibility(View.GONE);
                         startActivity(new Intent(EditBahanActivity.this, MainActivity.class));
                     }
                 })

@@ -1,88 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
-    tools:context=".RegisAdminActivity">
+    tools:context=".RegisAdminActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="124dp"
-        android:text="@string/label_daftar_akun_resepedia"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="#ffffff"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/editxt_email"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:background="@drawable/eduttext_bg"
-        android:ems="10"
-        android:hint="@string/label_alamat_email"
-        android:inputType="textEmailAddress"
-        android:textColor="#ffffff"
-        android:textColorHint="#ffffff"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        <EditText
+            android:id="@+id/editxt_email"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@drawable/eduttext_bg"
+            android:ems="10"
+            android:hint="Alamat email"
+            android:inputType="textEmailAddress"
+            android:textColor="#ffffff"
+            android:textColorHint="#ffffff"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/et_nama_daftar" />
 
-    <EditText
-        android:id="@+id/editxt_password"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/eduttext_bg"
-        android:ems="10"
-        android:hint="@string/label_password"
-        android:inputType="textPassword"
-        android:textColor="#ffffff"
-        android:textColorHint="#ffffff"
-        app:layout_constraintEnd_toEndOf="@+id/editxt_email"
-        app:layout_constraintStart_toStartOf="@+id/editxt_email"
-        app:layout_constraintTop_toBottomOf="@+id/editxt_email" />
+        <EditText
+            android:id="@+id/editxt_password"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/eduttext_bg"
+            android:ems="10"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:textColor="#ffffff"
+            android:textColorHint="#ffffff"
+            app:layout_constraintEnd_toEndOf="@+id/editxt_email"
+            app:layout_constraintStart_toStartOf="@+id/editxt_email"
+            app:layout_constraintTop_toBottomOf="@+id/editxt_email" />
 
-    <EditText
-        android:id="@+id/editxt_konfirmasiPassword"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/eduttext_bg"
-        android:ems="10"
-        android:hint="@string/label_konfirmasipassword"
-        android:inputType="textPassword"
-        android:textColor="#ffffff"
-        android:textColorHint="#ffffff"
-        app:layout_constraintEnd_toEndOf="@+id/editxt_password"
-        app:layout_constraintStart_toStartOf="@+id/editxt_password"
-        app:layout_constraintTop_toBottomOf="@+id/editxt_password" />
+        <EditText
+            android:id="@+id/editxt_konfirmasiPassword"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/eduttext_bg"
+            android:ems="10"
+            android:hint="Konfirmasi Password"
+            android:inputType="textPassword"
+            android:textColor="#ffffff"
+            android:textColorHint="#ffffff"
+            app:layout_constraintEnd_toEndOf="@+id/editxt_password"
+            app:layout_constraintStart_toStartOf="@+id/editxt_password"
+            app:layout_constraintTop_toBottomOf="@+id/editxt_password" />
 
 
-    <Button
-        android:id="@+id/btn_daftarDenganEmail"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/bg_button_white"
-        android:text="@string/label_daftar_dengan_email"
-        android:textColor="@color/colorPrimaryDark"
-        app:layout_constraintEnd_toEndOf="@+id/editxt_konfirmasiPassword"
-        app:layout_constraintStart_toStartOf="@+id/editxt_konfirmasiPassword"
-        app:layout_constraintTop_toBottomOf="@+id/editxt_konfirmasiPassword" />
+        <Button
+            android:id="@+id/btn_daftarDenganEmail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="32dp"
+            android:background="@drawable/bg_button_white"
+            android:text="Daftar dengan email"
+            android:textColor="@color/colorPrimaryDark"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/editxt_konfirmasiPassword"
+            app:layout_constraintStart_toStartOf="@+id/editxt_konfirmasiPassword"
+            app:layout_constraintTop_toBottomOf="@+id/editxt_konfirmasiPassword" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="210dp"
+            android:layout_height="219dp"
+            android:layout_marginTop="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/splash" />
+
+        <EditText
+            android:id="@+id/et_nama_daftar"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:background="@drawable/eduttext_bg"
+            android:hint="Name"
+            android:textColor="#ffffff"
+            android:textColorHint="#ffffff"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

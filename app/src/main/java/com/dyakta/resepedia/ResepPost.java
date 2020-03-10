@@ -154,6 +154,7 @@ public class ResepPost extends ResepPostId implements Parcelable {
         dest.writeString(this.user_id);
         dest.writeValue(this.porsi);
         dest.writeStringList(this.bahan);
+        dest.writeStringList(this.satuan);
         dest.writeList(this.quantitas);
     }
 
@@ -168,6 +169,7 @@ public class ResepPost extends ResepPostId implements Parcelable {
         this.user_id = in.readString();
         this.porsi = (Double) in.readValue(Double.class.getClassLoader());
         this.bahan = in.createStringArrayList();
+        this.satuan = in.createStringArrayList();
         this.quantitas = new ArrayList<Double>();
         in.readList(this.quantitas, Double.class.getClassLoader());
     }

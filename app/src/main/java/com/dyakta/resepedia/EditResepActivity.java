@@ -103,18 +103,18 @@ public class EditResepActivity extends AppCompatActivity {
 
         initComponent();
 
-        newPostImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                CropImage.activity()
-                        .setGuidelines(CropImageView.Guidelines.ON)
-                        .setMinCropResultSize(512, 512)
-                        .setAspectRatio(1, 1)
-                        .start(EditResepActivity.this);
-
-            }
-        });
+//        newPostImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                CropImage.activity()
+//                        .setGuidelines(CropImageView.Guidelines.ON)
+//                        .setMinCropResultSize(512, 512)
+//                        .setAspectRatio(1, 1)
+//                        .start(EditResepActivity.this);
+//
+//            }
+//        });
 
         firebaseFirestore = FirebaseFirestore.getInstance();
 
@@ -132,7 +132,7 @@ public class EditResepActivity extends AppCompatActivity {
                 String judul = edtJudul.getText().toString();
                 String deskripsi = edtDeskripsi.getText().toString();
                 prosesPorsi();
-                String jenisResep = edtJenisResep.getText().toString();
+//                String jenisResep = edtJenisResep.getText().toString();
                 //String bahan = spBahan.getSelectedItem().toString().trim();
                 ArrayList arrayBahan = new ArrayList();
                 ArrayList arrayQuantitas = new ArrayList();
@@ -148,97 +148,38 @@ public class EditResepActivity extends AppCompatActivity {
                 }
 
                 String langkah = edtLangkah.getText().toString();
-                if (!TextUtils.isEmpty(judul) && !TextUtils.isEmpty(deskripsi) && !TextUtils.isEmpty(jenisResep) && !TextUtils.isEmpty(langkah) && postImageUri != null) {
+                if (!TextUtils.isEmpty(judul) && !TextUtils.isEmpty(deskripsi)  && !TextUtils.isEmpty(langkah)) {
                     //String id = UUID.randomUUID().toString();
 
                     final String randomName = UUID.randomUUID().toString();
-                    final StorageReference filePath = storageReference.child("post_images").child(randomName);
-                    filePath.putFile(postImageUri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
-                        @Override
-                        public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-                            if (!task.isSuccessful()) {
-                                throw task.getException();
-                            }
-                            return filePath.getDownloadUrl();
-                        }
-                    }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-                        @Override
-                        public void onComplete(@NonNull final Task<Uri> task) {
-                            if (task.isSuccessful()) {
+                    Map<String, Object> postMap = new HashMap<>();
+                    postMap.put("id", randomName);
+                    postMap.put("judul", judul);
+                    postMap.put("desc", deskripsi);
+                    postMap.put("porsi", hasilPorsi);
+//                    postMap.put("jenis_resep", jenisResep);
+                    postMap.put("bahan", arrayBahan);
+                    postMap.put("quantitas", arrayQuantitas);
+                    postMap.put("langkah", langkah);
+                    postMap.put("user_id", current_user_id);
 
-                                File newImageFile = new File(postImageUri.getPath());
-
-                                try {
-                                    compressedImageFile = new Compressor(EditResepActivity.this).
-                                            setMaxHeight(100)
-                                            .setMaxWidth(100)
-                                            .setQuality(2)
-                                            .compressToBitmap(newImageFile);
-
-                                } catch (IOException e) {
-                                    e.printStackTrace();
+                    firebaseFirestore.collection("Resep").document(id).update(postMap)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        progressBar.setVisibility(View.GONE);
+                                        Toast.makeText(EditResepActivity.this, "Resep telah diubah", Toast.LENGTH_LONG).show();
+                                        Intent mainIntent = new Intent(EditResepActivity.this, MainActivity.class);
+                                        startActivity(mainIntent);
+                                        finish();
+                                    }
                                 }
+                            }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
 
-                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                compressedImageFile.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                                byte[] thumbData = baos.toByteArray();
-
-                                UploadTask uploadTask = storageReference.child("post_images/thumbs").child(randomName + ".jpg").
-                                        putBytes(thumbData);
-                                final Uri downloadUri = task.getResult();
-                                final String downloadtextUri = downloadUri.toString();
-                                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                        Task<Uri> uriTask = taskSnapshot.getMetadata().getReference().getDownloadUrl();
-                                       String downloadThumbUri = uriTask.toString();
-
-                                        Map<String, Object> postMap = new HashMap<>();
-                                        postMap.put("id", randomName);
-                                        postMap.put("image_url", downloadtextUri);
-                                        postMap.put("thumb", downloadThumbUri);
-                                        postMap.put("judul", judul);
-                                        postMap.put("desc", deskripsi);
-                                        postMap.put("porsi", hasilPorsi);
-                                        postMap.put("jenis_resep", jenisResep);
-                                        postMap.put("bahan", arrayBahan);
-                                        postMap.put("quantitas", arrayQuantitas);
-                                        postMap.put("langkah", langkah);
-                                        postMap.put("user_id", current_user_id);
-
-                                        firebaseFirestore.collection("Resep").document(id).update(postMap)
-                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                    @Override
-                                                    public void onComplete(@NonNull Task<Void> task) {
-                                                        if (task.isSuccessful()) {
-                                                            progressBar.setVisibility(View.GONE);
-                                                            Toast.makeText(EditResepActivity.this, "Resep telah diubahkan", Toast.LENGTH_LONG).show();
-                                                            Intent mainIntent = new Intent(EditResepActivity.this, MainActivity.class);
-                                                            startActivity(mainIntent);
-                                                            finish();
-                                                        }
-                                                    }
-                                                }).addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-
-                                                Toast.makeText(EditResepActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-
-
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(EditResepActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-
-
-                            } else {
-//                                progressBar.setVisibility(View.INVISIBLE);
-                            }
+                            Toast.makeText(EditResepActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -263,11 +204,11 @@ public class EditResepActivity extends AppCompatActivity {
         List<Double> quantitas = resepPost.getQuantitas();
         String langkah = resepPost.getLangkah();
 
-        setBlogImage(gbr,thumb);
+//        setBlogImage(gbr,thumb);
         edtJudul.setText(judul);
         edtDeskripsi.setText(desc);
         edtPorsi.setText(String.valueOf(porsi));
-        edtJenisResep.setText(jenisResep);
+//        edtJenisResep.setText(jenisResep);
 
         for (int i = 0; i < bahan.size(); i++) {
             btnAddBahan.performClick();
@@ -287,17 +228,17 @@ public class EditResepActivity extends AppCompatActivity {
         edtLangkah.setText(langkah);
     }
 
-    public void setBlogImage(String downloadUri,String thumb){
-        ImageView gambar = findViewById(R.id.imageButton);
-
-        RequestOptions requestOptions = new RequestOptions();
-
-        requestOptions.placeholder(R.drawable.user_male);
-        Glide.with(this).applyDefaultRequestOptions(requestOptions).load(downloadUri).thumbnail(
-                Glide.with(this).load(thumb)
-        ).into(gambar);
-
-    }
+//    public void setBlogImage(String downloadUri,String thumb){
+//        ImageView gambar = findViewById(R.id.imageButton);
+//
+//        RequestOptions requestOptions = new RequestOptions();
+//
+//        requestOptions.placeholder(R.drawable.user_male);
+//        Glide.with(this).applyDefaultRequestOptions(requestOptions).load(downloadUri).thumbnail(
+//                Glide.with(this).load(thumb)
+//        ).into(gambar);
+//
+//    }
 
     public void AddBahan(View view) {
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -316,12 +257,10 @@ public class EditResepActivity extends AppCompatActivity {
         edtJudul = findViewById(R.id.edt_judul);
         edtDeskripsi = findViewById(R.id.edt_deskripsi);
         edtPorsi = findViewById(R.id.edt_porsi);
-        edtJenisResep = findViewById(R.id.edt_jenis_resep);
         layoutBahan = findViewById(R.id.layout_bahan);
         btnAddBahan = findViewById(R.id.btn_add_bahan);
         progressBar = findViewById(R.id.progressBar2);
         //spBahan = findViewById(R.id.sp_bahan);
-        newPostImage = findViewById(R.id.imageButton);
         edtQuantitas = findViewById(R.id.edt_quantitas);
         edtLangkah = findViewById(R.id.edt_langkah_langkah);
         btnAddResep = findViewById(R.id.btn_add);
@@ -347,19 +286,19 @@ public class EditResepActivity extends AppCompatActivity {
         String kuantitas = Double.toString(hasilKuantitas);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == RESULT_OK) {
-
-                postImageUri = result.getUri();
-                newPostImage.setImageURI(postImageUri);
-
-            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Exception error = result.getError();
-            }
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+//            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+//            if (resultCode == RESULT_OK) {
+//
+//                postImageUri = result.getUri();
+//                newPostImage.setImageURI(postImageUri);
+//
+//            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+//                Exception error = result.getError();
+//            }
+//        }
+//    }
 }

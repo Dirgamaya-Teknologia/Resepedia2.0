@@ -51,18 +51,19 @@
             app:layout_constraintStart_toStartOf="@+id/editText_passLogin"
             app:layout_constraintTop_toBottomOf="@+id/txt_lupaPassword" />
 
-        <Button
+        <TextView
             android:id="@+id/btn_masuk2"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/bg_button"
-            android:text="Daftar Sebagai Admin"
-            android:textColor="#ffffff"
-            app:layout_constraintEnd_toEndOf="@+id/editText_passLogin"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/editText_passLogin"
-            app:layout_constraintTop_toBottomOf="@+id/btn_masuk" />
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:text="Create Account"
+            android:textColor="@color/colorPrimaryDark"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textView5"
+            app:layout_constraintTop_toTopOf="@+id/textView5"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/txt_lupaPassword"
@@ -105,6 +106,24 @@
             app:layout_constraintEnd_toEndOf="@+id/textView2"
             app:layout_constraintStart_toStartOf="@+id/textView2"
             app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="32dp"
+            android:text="New to Resepedia ?"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline4"
+            app:layout_constraintTop_toBottomOf="@+id/btn_masuk" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.50121653" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

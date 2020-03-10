@@ -26,19 +26,6 @@
             app:titleTextColor="#ffffff" />
 
 
-
-        <ImageView
-            android:id="@+id/imageButton"
-            android:layout_width="match_parent"
-            android:layout_height="204dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            app:srcCompat="@drawable/ic_add_a_photo_black_24dp"
-            tools:ignore="VectorDrawableCompat" />
-
         <TextView
             android:id="@+id/tv_judul"
             android:layout_width="wrap_content"
@@ -79,7 +66,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
-            android:inputType="text" />
+            android:inputType="textMultiLine|text" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -114,56 +101,33 @@
                     android:layout_marginRight="8dp"
                     android:inputType="number|text" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Bahan"
-                    android:textStyle="bold"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="8dp"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Jenis Resep"
-                    android:textStyle="bold"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="8dp"/>
-
-                <EditText
-                    android:id="@+id/edt_jenis_resep"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:inputType="text" />
+                    android:layout_weight="2"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:paddingRight="16dp"
-                    android:text="Quantitas"
-                    android:textStyle="bold"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="8dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:paddingRight="16dp"
+                        android:text="Quantitas"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginLeft="16dp"
+                        android:text="Bahan"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </LinearLayout>
 
@@ -189,7 +153,8 @@
             android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:onClick="AddBahan"/>
+            android:onClick="AddBahan"
+            tools:ignore="OnClick" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -210,7 +175,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="8dp"
-            android:inputType="text" />
+            android:inputType="textMultiLine|text" />
 
         <ProgressBar
             android:id="@+id/progressBar2"

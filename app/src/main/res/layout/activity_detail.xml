@@ -31,6 +31,8 @@
             android:id="@+id/txt_deskripsi_detail_resep"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
             android:text="deskripsi resep"
             app:layout_constraintEnd_toEndOf="@+id/judul_detail_resep"
@@ -41,18 +43,22 @@
             android:id="@+id/textView17"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
             android:text="Bahan-bahan"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="@+id/txt_deskripsi_detail_resep"
-            app:layout_constraintStart_toStartOf="@+id/txt_deskripsi_detail_resep"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txt_deskripsi_detail_resep" />
 
         <TextView
             android:id="@+id/txt_bahan_detail_resep"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
             android:text="Detail Bahan"
             app:layout_constraintEnd_toStartOf="@+id/guideline3"
@@ -79,34 +85,25 @@
             android:id="@+id/txt_langkah_detail_resep"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
+            android:layout_marginBottom="32dp"
             android:text="langkah"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/textView19"
             app:layout_constraintStart_toStartOf="@+id/textView19"
             app:layout_constraintTop_toBottomOf="@+id/textView19" />
-
-        <ImageView
-            android:id="@+id/imageView9"
-            android:layout_width="0dp"
-            android:layout_height="270dp"
-            android:scaleType="centerCrop"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/detailToolbar"
-            app:srcCompat="@drawable/user_male" />
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/detailToolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
+            android:background="@color/colorPrimaryDark"
             android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:titleTextColor="#ffffff" />
 
         <TextView
@@ -126,7 +123,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="32dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:ems="10"
@@ -134,27 +131,42 @@
             android:inputType="number|textPersonName"
             app:layout_constraintEnd_toStartOf="@+id/btn_hitung"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView9" />
+            app:layout_constraintTop_toBottomOf="@+id/detailToolbar" />
 
         <Button
-            android:background="@drawable/bg_button"
             android:id="@+id/btn_hitung"
-            android:textColor="@color/white"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginRight="24dp"
+            android:background="@drawable/bg_button"
             android:text="Terapkan"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/et_porsi"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView9" />
+            app:layout_constraintTop_toTopOf="@+id/et_porsi" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.5" />
+            app:layout_constraintGuide_percent="0.4" />
+
+        <TextView
+            android:id="@+id/txt_satuan_detail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:gravity="right"
+            android:text="TextView"
+            app:layout_constraintBottom_toBottomOf="@+id/txt_kuantitas"
+            app:layout_constraintEnd_toEndOf="@+id/textView17"
+            app:layout_constraintStart_toEndOf="@+id/txt_kuantitas"
+            app:layout_constraintTop_toTopOf="@+id/txt_kuantitas" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
