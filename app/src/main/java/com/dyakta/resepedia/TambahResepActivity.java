@@ -265,55 +265,18 @@ public class TambahResepActivity extends AppCompatActivity implements AdapterVie
         });
     }
 
-    private void addBahan(View v) {
-        LinearLayout layout = new LinearLayout(this);
-        setLayoutBahan(layout);
-
-        Spinner spinner = new Spinner(this);
-        setSpinnerBahan(spinner);
-        layout.addView(spinner);
-
-        TextView textView = new TextView(this);
-        setTextViewSatuan(textView);
-        layout.addView(textView);
-
-        EditText editText = new EditText(this);
-        setEditTextBahan(editText);
-        layout.addView(editText);
-
-        layoutBahan.addView(layout, layoutBahan.getChildCount());
-    }
-
-    //This function to convert DPs to pixels
-    private int convertDpToPixel(float dp) {
-        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
-        float px = dp * (metrics.densityDpi / 160f);
-        return Math.round(px);
-    }
-
-    private void setLayoutBahan(LinearLayout layout){
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        layout.setOrientation(LinearLayout.HORIZONTAL);
-        layout.setLayoutParams(params);
-    }
-
-    private void setSpinnerBahan(Spinner spinner){
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                2);
-        params.setMargins(convertDpToPixel(16), 0, convertDpToPixel(8), 0);
-        params.gravity = Gravity.CENTER_VERTICAL;
-        spinner.setLayoutParams(params);
+    private void addBahan(View view) {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        view = inflater.inflate(R.layout.field_bahan, null);
+        spBahan = view.findViewById(R.id.sp_bahan);
+        layoutBahan.addView(view, layoutBahan.getChildCount());
 
         CollectionReference subjectRef = firebaseFirestore.collection("Bahan");
         listNamaBahan = new ArrayList<>();
         listSatuan = new ArrayList<>();
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, listNamaBahan);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        spBahan.setAdapter(adapter);
         subjectRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -328,29 +291,7 @@ public class TambahResepActivity extends AppCompatActivity implements AdapterVie
                 }
             }
         });
-        spinner.setOnItemSelectedListener(this);
-    }
-
-    private void setTextViewSatuan(TextView textView){
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                4);
-        textView.setLayoutParams(params);
-        textView.setText("satuan");
-    }
-
-    private void setEditTextBahan(EditText editText){
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                4);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            params.setMarginStart(16);
-            params.setMarginEnd(16);
-        }
-        editText.setLayoutParams(params);
-        editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        spBahan.setOnItemSelectedListener(this);
     }
 
     private void initComponent() {
