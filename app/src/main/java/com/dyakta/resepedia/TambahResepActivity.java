@@ -7,11 +7,16 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -61,7 +66,7 @@ import java.util.UUID;
 import id.zelory.compressor.Compressor;
 
 
-public class TambahResepActivity extends AppCompatActivity {
+public class TambahResepActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private EditText edtJudul, edtDeskripsi, edtPorsi, edtJenisResep, edtLangkah;
     private ImageView newPostImage;
@@ -73,6 +78,7 @@ public class TambahResepActivity extends AppCompatActivity {
     private FirebaseFirestore firebaseFirestore;
     private List<Bahan> listBahan;
     private List<String> listNamaBahan;
+    private List<String> listSatuan;
     private Toolbar newPostToolbar;
     private Double v1, v2, hasilPorsi, hasilKuantitas;
 
@@ -260,45 +266,91 @@ public class TambahResepActivity extends AppCompatActivity {
     }
 
     private void addBahan(View v) {
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        v = inflater.inflate(R.layout.field_bahan, null);
-        layoutBahan.addView(v, layoutBahan.getChildCount());
+        LinearLayout layout = new LinearLayout(this);
+        setLayoutBahan(layout);
+
+        Spinner spinner = new Spinner(this);
+        setSpinnerBahan(spinner);
+        layout.addView(spinner);
+
+        TextView textView = new TextView(this);
+        setTextViewSatuan(textView);
+        layout.addView(textView);
+
+        EditText editText = new EditText(this);
+        setEditTextBahan(editText);
+        layout.addView(editText);
+
+        layoutBahan.addView(layout, layoutBahan.getChildCount());
+    }
+
+    //This function to convert DPs to pixels
+    private int convertDpToPixel(float dp) {
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+        float px = dp * (metrics.densityDpi / 160f);
+        return Math.round(px);
+    }
+
+    private void setLayoutBahan(LinearLayout layout){
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        layout.setOrientation(LinearLayout.HORIZONTAL);
+        layout.setLayoutParams(params);
+    }
+
+    private void setSpinnerBahan(Spinner spinner){
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                2);
+        params.setMargins(convertDpToPixel(16), 0, convertDpToPixel(8), 0);
+        params.gravity = Gravity.CENTER_VERTICAL;
+        spinner.setLayoutParams(params);
 
         CollectionReference subjectRef = firebaseFirestore.collection("Bahan");
-        spBahan = v.findViewById(R.id.sp_bahan);
-        txt_satuan = v.findViewById(R.id.txt_satuan);
-        List<String> subjects = new ArrayList<>();
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, subjects);
+        listNamaBahan = new ArrayList<>();
+        listSatuan = new ArrayList<>();
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, listNamaBahan);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spBahan.setAdapter(adapter);
+        spinner.setAdapter(adapter);
         subjectRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
                 if (task.isSuccessful()) {
-
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        Bahan bahan = document.toObject(Bahan.class);
-                        List<String> subjects2 = Arrays.asList(bahan.getSatuan());
-
-
-                        String id = bahan.getId();
-
-                        String subject = document.getString("nama");
-                        subjects.add(subject);
-
-                            String first = subjects2.get(0);
-
-                                txt_satuan.setText(first);
-                                txt_satuan.setVisibility(View.GONE);
-//                            }
-//                        }
-
+                        String namaBahan = document.getString("nama");
+                        String satuan = document.getString("satuan");
+                        listNamaBahan.add(namaBahan);
+                        listSatuan.add(satuan);
                     }
                     adapter.notifyDataSetChanged();
                 }
             }
         });
+        spinner.setOnItemSelectedListener(this);
+    }
+
+    private void setTextViewSatuan(TextView textView){
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                4);
+        textView.setLayoutParams(params);
+        textView.setText("satuan");
+    }
+
+    private void setEditTextBahan(EditText editText){
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                4);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            params.setMarginStart(16);
+            params.setMarginEnd(16);
+        }
+        editText.setLayoutParams(params);
+        editText.setInputType(InputType.TYPE_CLASS_NUMBER);
     }
 
     private void initComponent() {
@@ -332,6 +384,20 @@ public class TambahResepActivity extends AppCompatActivity {
         konver(edtQuantitas);
         hasilKuantitas = v2 / v1;  //perhitungan
         String kuantitas = Double.toString(hasilKuantitas);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        for (int i = 0; i < layoutBahan.getChildCount(); i++) {
+            LinearLayout layout = (LinearLayout) layoutBahan.getChildAt(i);
+            TextView textView = (TextView) layout.getChildAt(1);
+            textView.setText(listSatuan.get(position));
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 
 //    @Override
